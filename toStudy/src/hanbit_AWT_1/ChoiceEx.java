@@ -1,8 +1,8 @@
-package hanbit_AWT;
+package hanbit_AWT_1;
 
 import java.awt.*;
 
-public class ButtonEx {
+public class ChoiceEx {
 	
 	public static void main(String[] args) {
 		
@@ -10,14 +10,13 @@ public class ButtonEx {
 		
 		Panel p = new Panel();
 		
-		Checkbox ck1 = new Checkbox( "movie", true );
-		Checkbox ck2 = new Checkbox( "sports" );
-		Checkbox ck3 = new Checkbox( "travle" );
+		Choice ch = new Choice();
 		
-		p.add(ck1);
-		p.add(ck2);
-		p.add(ck3);		
+		ch.addItem( "apple" );
+		ch.addItem("banana");
 		
+		p.add( ch );
+
 		f.add(p);
 		
 		f.setLocation(300, 300);
