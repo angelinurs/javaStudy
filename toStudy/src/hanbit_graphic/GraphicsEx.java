@@ -117,6 +117,7 @@ public class GraphicsEx extends Frame
 					return;
 				}
 				else if( str.equals("Line"))	{
+//					g.setColor(new Color(1.0f, 0.0f, 0.0f, 0.5f));
 					g.setColor(Color.WHITE);
 					g.drawLine(first_point.x, first_point.y, old_point.x, old_point.y);
 					
@@ -126,6 +127,7 @@ public class GraphicsEx extends Frame
 					return;
 				}
 				else if( str.equals("Circle"))	{
+//					g.setColor(new Color(0.0f, 0.0f, 0.0f, 0.0f));
 					g.setColor( new Color( 255,255,255) );
 					g.fillOval(first_point.x, first_point.y, 
 							old_point.x - first_point.x, old_point.y -first_point.y);
