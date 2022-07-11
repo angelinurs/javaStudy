@@ -14,7 +14,7 @@ public class ArrayEx {
 		
 		// print each element
 		for( int idx = arr.length-1; idx >= 0; idx-- )
-			out.print( arr[ idx ] + " " );		
+			out.print( arr[ idx ] + " " );
 		out.println();
 		
 		// declare and binding

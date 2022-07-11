@@ -1,4 +1,4 @@
-package hanbit_swing;
+package hanbit_SWING;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -19,7 +19,9 @@ public class JTextPaneEx extends JFrame {
 		sp.setPreferredSize( new Dimension( 250, 250 ) );
 		add( sp );
 		
+		setTitle( "JTextPaneEx" );
 		setLocation( 300, 200 );
+		setSize(300, 300);
 		setVisible( true );
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 	}
@@ -79,7 +81,9 @@ public class JTextPaneEx extends JFrame {
 		
 		if( pigIcon != null ) {
 			StyleConstants.setIcon(s, pigIcon);
-		}
+		} 
+		
+		// 하단의 버튼 아이콘 안보임.
 		
 		s = sdoc.addStyle("button", regular );
 		StyleConstants.setAlignment( s, StyleConstants.ALIGN_CENTER );

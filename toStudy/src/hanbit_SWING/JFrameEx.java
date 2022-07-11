@@ -1,4 +1,4 @@
-package hanbit_swing;
+package hanbit_SWING;
 
 import java.awt.*;
 import java.awt.event.*;
