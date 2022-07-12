@@ -12,6 +12,8 @@ public class Baseball {
 	
 	int ballCount = 0;
 	
+	int strikeCnt, ballCnt, OutCnt;
+	
 	/*
 	 * out : 0
 	 * ball : 1
@@ -59,7 +61,7 @@ public class Baseball {
 		int[] tusu = new int[3]; 
 		Scanner sc = new Scanner( System.in );
 		
-		System.out.println( ballCount++ +" " + "input 3 ball ");
+		System.out.println( ( ballCount++ + 1 ) +" 번째 " + "input 3 ball ");
 		
 		for( int idx = 0; idx < tusu.length; idx++ )	{
 			tusu[ idx ] = sc.nextInt();
@@ -76,7 +78,25 @@ public class Baseball {
 			}
 		}
 		
+		this.strikeCount();
+		this.ballCount();
+		
 		show_stat();
+		
+		strikeCnt = 0;
+		ballCnt = 0;
+	}
+	
+	public void strikeCount() {
+		for( int val : check_board )
+			if( val == 2 )
+				strikeCnt++;
+	}
+	
+	public void ballCount() {
+		for( int val : check_board )
+			if( val == 1 )
+				ballCnt++;
 	}
 	
 	public void clear_board()	{
@@ -91,9 +111,11 @@ public class Baseball {
 			stat = ( check_board[ idx ] == 0 ) ? "out" :
 				   ( check_board[ idx ] == 1 ) ? "ball" : "strike";
 			sb.append( stat+" " );
-		}
-		System.out.println( sb.toString() );
+		}		
 		
+		String prn = String.format("%2d Strkie, %2d Ball, %2d Out\n", strikeCnt, ballCnt, 3 - strikeCnt- ballCnt );
+		sb.append("\n" + prn );
+		System.out.println( sb.toString() );		
 	}
 
 	public static void main(String[] args) {

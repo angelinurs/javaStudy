@@ -5,11 +5,11 @@ import java.text.DecimalFormat;
 /*
  * mkLotto number
  */
-class Lotto {
+class LottoMachine {
 	int[] numbers;
 	boolean dup;
 	
-	public Lotto()	{		
+	public LottoMachine()	{		
 		dup = false;
 	}
 	
@@ -18,8 +18,9 @@ class Lotto {
 			System.out.println( "** 결재 금액이 부족합니다. **" );
 		} else {
 			System.out.println( "== 구매 해주셔서 감사합니다. ==" );
-			System.out.printf( "- 결재 후 잔액 -> [ %s 원 ]\n", this.moneyCount( price - 1000 ) );
 //			System.out.printf( "- 결재 후 잔액 -> [ %s 원 ]\n", price - 1000 );
+			// comma seperate version.
+			System.out.printf( "- 결재 후 잔액 -> [ %s 원 ]\n", this.moneyCount( price - 1000 ) );
 			this.setNumbers();
 			
 			System.out.print( "- 추첨번호 -> " );
@@ -38,9 +39,9 @@ class Lotto {
 			    && idx % 3 == 0 
 			    && ( idx <= str.length() / 3 * 3 ) ) {
 				
-				buffer = "," + buffer;			
+				buffer = "," + buffer;
 			}
-				
+
 			buffer = str.charAt(idx) + buffer;
 		}
 		System.out.println( buffer );
@@ -67,7 +68,7 @@ class Lotto {
 			
 			for( int jdx = 0; jdx < idx; jdx++  ) {
 				if ( numbers[ jdx ] == ball )	{
-					dup = true;					
+					dup = true;
 					break;
 				}
 			}
@@ -86,10 +87,10 @@ class Lotto {
 	}
 };
 
-public class LottoEx6 {
+public class Lotto {
 
 	public static void main(String[] args) {
-		Lotto number = new Lotto();
+		LottoMachine number = new LottoMachine();
 		
 		number.insert( 1000 );
 		System.out.println();
