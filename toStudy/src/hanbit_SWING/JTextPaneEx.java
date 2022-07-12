@@ -90,7 +90,7 @@ public class JTextPaneEx extends JFrame {
 		
 		ImageIcon soundIcon = new ImageIcon( "IMAGES/icon2.jpg" );
 		
-		JButton button = new JButton();
+		JButton button = new JButton(soundIcon);
 		
 		if( button != null )	{
 			button.setIcon( soundIcon );

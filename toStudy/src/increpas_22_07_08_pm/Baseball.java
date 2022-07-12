@@ -1,4 +1,4 @@
-package inrepas_22_07_08_pm;
+package increpas_22_07_08_pm;
 
 import java.util.Scanner;
 /*
@@ -104,5 +104,4 @@ public class Baseball {
 		
 		game.play();
 	}
-
 }

@@ -1,4 +1,4 @@
-package inrepas_22_07_08_pm;
+package increpas_22_07_08_pm;
 
 import static java.lang.System.out;
 
