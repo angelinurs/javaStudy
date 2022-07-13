@@ -6,25 +6,26 @@ import java.util.Scanner;
 class Drink extends Cup { ; };
 
 public class VendingMachine {
-	Drink[] drinks;
+	private Drink[] drinks;
 	
-	String[] productNames = { "Coke", "Sprite", "Let's be", "CeylonTea" };
-	int[] productPrices = { 500, 500, 700, 900 };
+	// products Datas
+	private String[] productNames = { "Coke", "Sprite", "Let's be", "CeylonTea" };
+	private int[] productPrices = { 500, 500, 700, 900 };
 	
-	int coin;
+	// insert money buffer
+	private int coin;
 
 	public VendingMachine(  ) { 
 		drinks = new Drink[ productNames.length ]; 
 		
 		setDrinks();
-		dspProducts();
+		System.out.println( dspProducts() );
 		
 		System.out.print( "Insert coin : ");
 		
 		insertCoin( );
 		
 		Drink drink = selectDrink();
-		
 		
 		int change = changeMoney( drink );
 		
@@ -35,12 +36,9 @@ public class VendingMachine {
 			
 			System.out.printf( "거스름 돈 : %s\n", df.format(change) );
 		}
-		
 	}
 
-	public Drink[] getDrinks() {
-		return drinks;
-	}
+	public Drink[] getDrinks() { return drinks; }
 
 	public void setDrinks() {
 		for( int idx = 0; idx < drinks.length; idx++ ) {
@@ -51,10 +49,10 @@ public class VendingMachine {
 	}
 	
 	public int getCoin() { return coin; }
-
 	public void setCoin(int coin) { this.coin = coin; }
 
-	public void dspProducts() {
+	// display Products
+	public String dspProducts() {
 		StringBuffer sb = new StringBuffer();
 		String temp;
 		
@@ -71,30 +69,44 @@ public class VendingMachine {
 		}
 		sb.append( "\n" );
 		
-		System.out.println( sb.toString() );
+		return sb.toString();
 	}
 	
-	
+	// insert Coin
 	public void insertCoin( )	{
-		Scanner sc = new Scanner( System.in );
+		// Case 1.
+//		Scanner sc = new Scanner( System.in );
+//		
+//		int temp = sc.nextInt();
 		
-		int temp = sc.nextInt();
+		// Case 2.
+//		int temp = new Scanner( System.in ).nextInt();
+//		
+//		setCoin( temp );
 		
-		setCoin( temp );
+		// Case 3.
+		setCoin( new Scanner( System.in ).nextInt() );
 	}
 	
+	// select Drink
 	public Drink selectDrink( )	{
 		Scanner sc = new Scanner( System.in );
-		
-		System.out.print( "select procduct : " );
-		
 		int proNum;
 		
-		proNum = sc.nextInt()-1;
+		for( ;; )	{
+			System.out.print( "select procduct : " );
+			proNum = sc.nextInt()-1;
+			
+			if( proNum >= 0 && proNum <= 3 ) break;
+			
+			System.out.println();
+			System.out.println( "-- just select between 1 ~ 4 --" );
+		}
 				
 		return this.drinks[ proNum ];
 	}
 	
+	// change Money
 	public int changeMoney( Drink drink )	{
 		return ( coin < drink.getPrice() ) ? -1 : coin - drink.getPrice();
 	}
