@@ -1,5 +1,6 @@
 package increpas_22_07_08_pm;
 
+import java.util.Arrays;
 import java.util.Scanner;
 /*
  *  야구 게임
@@ -8,7 +9,7 @@ import java.util.Scanner;
 public class Baseball {
 	int[] zone;
 	int[] check_board;
-	boolean dup = false;
+	int[] user;
 	
 	int ballCount = 0;
 	
@@ -21,18 +22,24 @@ public class Baseball {
 	 */
 	
 	public Baseball()	{
-		zone = new int[3];
-		check_board = new int[3];
 		
 		setZone();
+		System.out.println( getZone() );
+		
+		while( strikeCnt != 3 ) play();
+		
+		System.out.println( "Done.");
 	}
 	
 	public void setZone() {
-		zone[ 0 ] = (int)( Math.random() * 8 + 1 );
+		boolean dup = false;
+		
+		zone = new int[3];
+		zone[ 0 ] = (int)( Math.random() * 9 + 1 );
 		
 		for( int idx = 1; idx < zone.length;  )	{
 			
-			int ball = (int)( Math.random() * 8 + 1 );
+			int ball = (int)( Math.random() * 9 + 1 );
 			
 			for( int jdx = 0; jdx < idx; jdx++  ) {
 				if ( zone[ jdx ] == ball )	{
@@ -41,50 +48,70 @@ public class Baseball {
 				}
 			}
 			
-			if( dup ) dup = false;
-			else zone[ idx++ ] = ball;
+			if( !dup ) zone[ idx++ ] = ball;
 		}
 	}
 	
-	public void print_zone() {
+	public void setUser() {
 		
-		System.out.println("== Setting zone ==");
+		user = new int[3]; 
+		Scanner sc = new Scanner( System.in );
 		
-		for( int digit : zone )
-			System.out.print( digit + " " );
-		System.out.println();
+//		for( int idx = 0; idx < tusu.length; idx++ )	{
+//			user[ idx ] = sc.nextInt();
+//		}
+		
+		// Check input data length ( size -> 3 )
+//		for( ; ; ) {
+//			String[] ar = sc.nextLine().split(" ");
+//			
+//			if( ar.length == 3 ) break;
+//		}
+		
+		String[] ar = sc.nextLine().split(" ");
+		
+		for( int idx = 0; idx < ar.length; idx++ ) {
+			user[ idx ] = Integer.parseInt( ar[ idx ] );
+//			user[ idx ] = Integer.valueOf( ar[ idx ] );
+		}
+	}
+	
+	public String getZone() {
+//		StringBuffer sb = new StringBuffer();
+//		
+//		sb.append("== Setting zone ==" );
+//		sb.append( "\n" );
+//		
+//		for( int digit : zone )
+//			sb.append( String.valueOf( digit ) + " " );
+//			
+//		sb.append( "\n" );		
+//		
+//		return sb.toString();
+		
+		return Arrays.toString( zone );
 	}
 	
 	public void play( )	{
-		clear_board();
 		
-		int[] tusu = new int[3]; 
-		Scanner sc = new Scanner( System.in );
-		
-		System.out.println( ( ballCount++ + 1 ) +" 번째 " + "input 3 ball ");
-		
-		for( int idx = 0; idx < tusu.length; idx++ )	{
-			tusu[ idx ] = sc.nextInt();
-		}
-		
-		for ( int idx = 0; idx < tusu.length; idx++ ) {
-			for( int jdx = 0; jdx < zone.length; jdx++ ) {
-				if ( zone[ jdx ] == tusu[idx] )	{
-					if( idx == jdx )
-						check_board[idx] = 2;
-					else
-						check_board[idx] = 1;
-				}
-			}
-		}
-		
-		this.strikeCount();
-		this.ballCount();
-		
-		show_stat();
+		check_board = new int[3];
 		
 		strikeCnt = 0;
 		ballCnt = 0;
+		
+		System.out.println( ( ballCount++ + 1 ) +" 번째 " + "input 3 ball ");
+		
+		setUser();
+		
+		for ( int idx = 0; idx < user.length; idx++ ) 
+			for( int jdx = 0; jdx < zone.length; jdx++ )
+				if ( zone[ jdx ] == user[idx] )
+					check_board[ idx ] = ( idx == jdx ) ? 2: 1;
+		
+		strikeCount();
+		ballCount();
+		
+		show_stat();
 	}
 	
 	public void strikeCount() {
@@ -99,31 +126,16 @@ public class Baseball {
 				ballCnt++;
 	}
 	
-	public void clear_board()	{
-		for( int idx = 0; idx < check_board.length; idx++ )	{
-			check_board[ idx ] = 0;
-		}
-	}
 	public void show_stat()	{
 		StringBuffer sb = new StringBuffer();
-		String stat;
-		for( int idx = 0; idx < check_board.length; idx++ )	{
-			stat = ( check_board[ idx ] == 0 ) ? "out" :
-				   ( check_board[ idx ] == 1 ) ? "ball" : "strike";
-			sb.append( stat+" " );
-		}		
 		
-		String prn = String.format("%2d Strkie, %2d Ball, %2d Out\n", strikeCnt, ballCnt, 3 - strikeCnt- ballCnt );
+		String prn = String.format("%d Strkie, %d Ball, %d Out\n", strikeCnt, ballCnt, 3 - strikeCnt- ballCnt );
 		sb.append("\n" + prn );
 		System.out.println( sb.toString() );		
 	}
 
 	public static void main(String[] args) {
 		
-		Baseball game = new Baseball();
-		
-		game.print_zone();
-		
-		game.play();
+		new Baseball();
 	}
 }

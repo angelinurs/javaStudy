@@ -14,8 +14,22 @@ public class JProgressBarEx extends JFrame {
 	public JProgressBarEx()	{
 		super( "JProgressBar Test" );
 		
+		// Case 1.
+		// - add panel
+//		JPanel pane = new JPanel();
+//		
+//		pane.add( bar, BorderLayout.CENTER );
+//		pane.add( btStart, BorderLayout.EAST );
+//
+//		add( pane );
+		
+		// Case 2.
+		// - add frame
+		// need setLayout method
+		this.setLayout(new FlowLayout());
+		
+		add( btStart, BorderLayout.EAST );
 		add( bar, BorderLayout.CENTER );
-		add( btStart, BorderLayout.WEST );
 		
 		monitor = new ProgressMonitor( this, "진행중", "작업중", 0, 100 );
 		
