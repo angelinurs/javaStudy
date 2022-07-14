@@ -3,7 +3,13 @@ package increpas_22_07_12_am;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
-class Drink extends Cup { ; };
+class Drink extends Cup { 
+	public Drink() {;}
+	public Drink( String name, int price )	{
+		setName(name);
+		setPrice(price);
+	}
+};
 
 public class VendingMachine {
 	private Drink[] drinks;
