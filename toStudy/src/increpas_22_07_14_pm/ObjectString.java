@@ -28,7 +28,7 @@ public class ObjectString {
 		
 		System.out.println( s5.startsWith("Ja")? "true" : "false" );
 		
-		System.out.println( s5.toLowerCase().startsWith("Ja".toLowerCase())? "true" : "false" );
+		System.out.println( s5.toLowerCase().startsWith( "Ja".toLowerCase() )? "true" : "false" );
 		
 		System.out.println( s5.substring(1, 3) );
 		System.out.println( s5.substring(1) );

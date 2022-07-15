@@ -8,6 +8,12 @@ public class Flower {
 	LocalDate date;
 	
 	public Flower() { ; }
+	
+	public Flower( String name, int price, String date ) { 
+		setName(name);
+		setPrice(price);
+		setDate(date);
+	}
 
 	public String getName() { return name; }
 

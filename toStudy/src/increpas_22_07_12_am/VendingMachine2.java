@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -15,11 +14,10 @@ public class VendingMachine2 {
 	private Flower[] flowers;
 	
 	// products Datas
-	private String[] productNames = { "장미", "소국", "백합", "안개꽃" };
-	private int[] productPrices = { 22000, 17000, 22000, 11000 };
-	private String[] productDates = { "2022-06-10", "2022-07-07", "2022-06-22", "2022-07-11" };
-	
-	
+//	private String[] productNames = { "장미", "소국", "백합", "안개꽃" };
+//	private int[] productPrices = { 22000, 17000, 22000, 11000 };
+//	private String[] productDates = { "2022-06-10", "2022-07-07", "2022-06-22", "2022-07-11" };
+		
 	// insert money buffer
 	private int coin;
 
@@ -56,23 +54,24 @@ public class VendingMachine2 {
 
 	public Flower[] getFlowers() { return flowers; }
 
-	public void setFlowers() {
-		flowers = new Flower[ productNames.length ]; 
-		
-		for( int idx = 0; idx < flowers.length; idx++ ) {
-			flowers[ idx ] = new Flower();
-			flowers[ idx ].setName( productNames[ idx ] );
-			flowers[ idx ].setPrice( productPrices[ idx ] );
-			flowers[ idx ].setDate( productDates[ idx ] );
-		}
-	}
+//	public void setFlowers() {
+//		flowers = new Flower[ productNames.length ]; 
+//		
+//		for( int idx = 0; idx < flowers.length; idx++ ) {
+//			flowers[ idx ] = new Flower();
+//			flowers[ idx ].setName( productNames[ idx ] );
+//			flowers[ idx ].setPrice( productPrices[ idx ] );
+//			flowers[ idx ].setDate( productDates[ idx ] );
+//		}
+//	}
 	
 	public void setFlowersByFile( String filename ) throws FileNotFoundException	{
 		File file = new File( filename );
 		
 		Scanner sc = new Scanner( file );
 		
-		ArrayList<String> line = new ArrayList<String>();
+		ArrayList<String> line = new ArrayList<>();
+		
 		while( sc.hasNextLine() )	{
 			line.add( sc.nextLine() );
 		}
@@ -80,10 +79,19 @@ public class VendingMachine2 {
 		
 		for( int idx = 0; idx < line.size(); idx++ ) {
 			String[] temp = line.get(idx).split("/");
-			flowers[ idx ] = new Flower();
-			flowers[ idx ].setName( temp[0] );
-			flowers[ idx ].setPrice( Integer.parseInt( temp[1] ) );
-			flowers[ idx ].setDate( temp[2] );
+			
+			// Case 1.
+			// constructor without properties
+//			flowers[ idx ] = new Flower();
+//			flowers[ idx ].setName( temp[0].trim() );
+//			flowers[ idx ].setPrice( Integer.parseInt( temp[1].trim() ) );
+//			flowers[ idx ].setDate( temp[2].trim() );
+			
+			// Case 2.
+			// constructor with properties
+			flowers[ idx ] = new Flower( temp[0].trim(),	// name
+										 Integer.parseInt( temp[1].trim() ), // price
+										 temp[2].trim() );	// date
 		}
 	}
 	
@@ -110,7 +118,7 @@ public class VendingMachine2 {
 		
 		temp = "";
 		for( int idx = 0; idx < flowers.length; idx++ )	{
-			temp = String.format("  %-10s ", flowers[idx].getDate().toString() );
+			temp = String.format(" %-10s ", flowers[idx].getDate().toString() );
 			sb.append( temp );
 		}
 		sb.append( "\n" );
