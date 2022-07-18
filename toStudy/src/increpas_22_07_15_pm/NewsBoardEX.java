@@ -2,8 +2,6 @@ package increpas_22_07_15_pm;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -12,13 +10,16 @@ import javax.swing.border.TitledBorder;
 
 public class NewsBoardEX extends JFrame{
 	
-	JPanel topP, midP, bottomP;
+//	JPanel topP, midP, bottomP;
+	JPanel topP, bottomP;
+	JScrollPane midP;
 	
 	public NewsBoardEX()	{
 		super( "NewsBoard test");
 		
 		topP = new JPanel();
-		midP = new JPanel();
+//		midP = new JPanel();
+		midP = new JScrollPane();
 		bottomP = new JPanel();
 		
 		// setup Windows Layout 
@@ -46,10 +47,19 @@ public class NewsBoardEX extends JFrame{
 		 * Configure Middle Panel
 		 *******************/
 		// make ComboBox
-		JTextArea ta = new JTextArea( 10, 25 );
+		JTextArea ta = new JTextArea( 20, 20 );
 		
 		// add components to middle panel
-		midP.add( ta, BorderLayout.CENTER );
+		// Case 1. 생성과 동시에 component 삽입
+//		midP = new JScrollPane( ta );
+		
+		// Case 2. 생성후 component 삽입
+		midP = new JScrollPane();
+		midP.setViewportView( ta ); //이렇게 할 경우 프로그램상에서 textarea 가 안보임.
+		
+		midP.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
+		midP.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED );
+		
 		midP.setBorder( new TitledBorder( 
 						new LineBorder( Color.BLACK, 3 ), "Text Area Contents" ));
 		
@@ -84,14 +94,20 @@ public class NewsBoardEX extends JFrame{
 		/*******************
 		 * Merging panels to frame 
 		 *******************/
-		add( topP, BorderLayout.NORTH );
-		add( "Center", midP );
+		add( topP, BorderLayout.NORTH ); // 이런 방식을 더 많이 씀. 기존에 정의되어 있는 값 사용.
+		add( "Center", midP ); // 이 방식은 불필요하게 String object 를 생성함.
 		add( bottomP, BorderLayout.SOUTH );
 		
 		pack();
 		
 		setBounds( 300, 300, 300, 300 );
 		setVisible( true );
+		
+		/*
+		 *  아래의 코드는 현재 작업 상태가 저장이 안되고 바로 종료 함.
+		 *  그래서 개선이 필요하다.
+		 *  예를 들어 종료시 현재까지 작업을 저장할지 여부 확인 알람정도는 띄워줘햐 한다.
+		 */
 		setDefaultCloseOperation( EXIT_ON_CLOSE );
 	}
 
