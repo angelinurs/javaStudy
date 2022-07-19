@@ -45,7 +45,6 @@ public class JProgressBarEx extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				Task t = new Task();
 				t.start();
-				
 			}
 		};
 		
