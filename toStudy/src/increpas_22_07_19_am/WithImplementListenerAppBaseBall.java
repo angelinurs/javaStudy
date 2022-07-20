@@ -2,6 +2,7 @@ package increpas_22_07_19_am;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -62,7 +63,7 @@ public class WithImplementListenerAppBaseBall extends JFrame
 		
 		String tmp = e.getActionCommand();		
 		
-		if( tmp == "야구게임" )	{
+		if( tmp == "야구게임" || tmp == "Restart" )	{
 			// 기존 panel component 전부 삭제
 			botPanel.removeAll();		
 			
@@ -73,19 +74,45 @@ public class WithImplementListenerAppBaseBall extends JFrame
 			botPanel.updateUI();
 		}
 		
+		if( tmp == "Restart" )	{
+			ta.setText( "" );
+			
+			// 야구게임을 시작하면 유전에게 입력받을 ball number 를 3개까지 저장
+			userCount = new ArrayList<>();
+			bball = new Baseball();
+			ta.setText( bball.getZone() );
+			ta.append( "\n" );
+			ta.append( bball.msg() );
+			ta.append( "\n" );
+		}
+		
 		// 야구게임이 선택 되었을때,
 		if( tmp.length() == 1  ) {
 			
+			ta.append( tmp );
+			ta.append( " " );
+			
+			
+			System.out.printf( "size : %d, number : %d \n", userCount.size(), Character.getNumericValue( tmp.charAt(0) ) );
+			
+			userCount.add( Character.getNumericValue( tmp.charAt(0) ) );
+			
 			if( userCount.size() != 0 && userCount.size() % 3 == 0 )	{
+				System.out.println( userCount );
 				bball.setUser( userCount );
-				ta.append( bball.msg() );
 				bball.play();
 				ta.append( bball.show_stat() );
+				ta.append( "\n" );				
+				
+				if( bball.getStrikeCount() == 3 )	{
+					ta.append( "축하합니다.\n" );
+					return;
+				}
+				
+				ta.append( bball.msg() );
 				
 				userCount.clear();
 			
-			} else {
-				userCount.add(tmp.charAt(0) - 1);
 			}
 		}
 	}
@@ -94,21 +121,30 @@ public class WithImplementListenerAppBaseBall extends JFrame
 	public void createPanel(String panelTitle ) {
 		if( panelTitle == "야구게임" )	{
 			
-			botPanel = new JPanel( new GridLayout( size, 1 ) );
+			botPanel = new JPanel( new GridLayout( size+1, 1 ) );
 			
 			btns = new ArrayList<>();
+			
+			btns.add( new JButton( "Restart" ) );
+			botPanel.add( btns.get( 0 ) );
+
+			btns.get( 0 ).addActionListener( this );
 
 			for( int idx = 0; idx < size; idx++ ) {
 				btns.add( new JButton( String.valueOf( idx ) ) );
 				
-				botPanel.add( btns.get(idx) );
+				botPanel.add( btns.get(idx + 1) );
 
-				btns.get( idx ).addActionListener( this );
+				btns.get( idx + 1 ).addActionListener( this );
 			}
 			
 			// 야구게임을 시작하면 유전에게 입력받을 ball number 를 3개까지 저장
-//			bball = new Baseball();
 			userCount = new ArrayList<>();
+			bball = new Baseball();
+			ta.setText( bball.getZone() );
+			ta.append( "\n" );
+			ta.append( bball.msg() );
+			ta.append( "\n" );
 		}
 	}
 	

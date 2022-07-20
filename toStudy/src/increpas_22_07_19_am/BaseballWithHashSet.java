@@ -2,9 +2,11 @@ package increpas_22_07_19_am;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 
-public class Baseball {
-	int[] zone;
+public class BaseballWithHashSet {
+	ArrayList<Integer> zone;
 	int[] check_board;
 	ArrayList<Integer> user;
 	
@@ -18,8 +20,9 @@ public class Baseball {
 	 * strike : 2
 	 */
 	
-	public Baseball()	{
+	public BaseballWithHashSet()	{
 		check_board = new int[3];
+		zone = new ArrayList<>();
 		
 		setZone();
 		
@@ -31,24 +34,18 @@ public class Baseball {
 	}
 	
 	public void setZone() {
-		boolean dup = false;
 		
-		zone = new int[3];
-		zone[ 0 ] = (int)( Math.random() * 9 + 1 );
+		zone.clear();
 		
-		for( int idx = 1; idx < zone.length;  )	{
-			
-			int ball = (int)( Math.random() * 9 + 1 );
-			
-			for( int jdx = 0; jdx < idx; jdx++  ) {
-				if ( zone[ jdx ] == ball )	{
-					dup = true;					
-					break;
-				}
-			}
-			
-			if( !dup ) zone[ idx++ ] = ball;
-		}
+		HashSet<Integer> temp = new HashSet<>();
+		
+		while( temp.size() < 3 )
+			temp.add( (int)( Math.random() * 9 + 1 ) );
+		
+		Iterator<Integer> it = temp.iterator();
+		
+		while( it.hasNext() )
+			zone.add( it.next() );
 	}
 	
 	
@@ -58,7 +55,7 @@ public class Baseball {
 	}
 	
 	public String getZone() { 
-		return Arrays.toString( zone );
+		return zone.toString();
 	}
 	
 	public void play( )	{
@@ -67,8 +64,8 @@ public class Baseball {
 		ballCnt = 0;
 		
 		for ( int idx = 0; idx < user.size(); idx++ ) 
-			for( int jdx = 0; jdx < zone.length; jdx++ )
-				if ( zone[ jdx ] == user.get( idx ) )
+			for( int jdx = 0; jdx < zone.size(); jdx++ )
+				if ( zone.get( jdx ) == user.get( idx ) )
 					check_board[ idx ] = ( idx == jdx ) ? 2: 1;
 		
 		strikeCount();
