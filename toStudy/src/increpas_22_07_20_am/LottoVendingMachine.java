@@ -51,8 +51,6 @@ public class LottoVendingMachine extends JFrame
 		
 		pickBall();
 		
-		
-		
 		add( main_p, BorderLayout.CENTER );
 		add( bottom_p, BorderLayout.SOUTH );
 		

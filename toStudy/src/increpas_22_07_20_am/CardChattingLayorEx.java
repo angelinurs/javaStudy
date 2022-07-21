@@ -1,27 +1,10 @@
 package increpas_22_07_20_am;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 
 import javax.crypto.spec.ChaCha20ParameterSpec;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 public class CardChattingLayorEx extends JFrame
 								 implements ActionListener {
@@ -52,11 +35,19 @@ public class CardChattingLayorEx extends JFrame
 	
 	JButton sendBtn;
 	
+	// flags
+	enum CardSection	{
+		MAIN, CHAT
+	}
+	
+	String userId;
+	CardSection cardSection;
+	
 	public CardChattingLayorEx() {
 		super( "CardChattingLayor" );
 		
 		cl = new CardLayout();
-		setLayout( cl );
+		getContentPane().setLayout( cl );
 
 		/* *****************************
 		 * mainCard
@@ -129,8 +120,20 @@ public class CardChattingLayorEx extends JFrame
 		
 		getContentPane().add( "chat", card_2 );
 		
+		pack();
+		
+		cardSection = CardSection.MAIN;
+		
 		loginBtn.addActionListener( this );
 		sendBtn.addActionListener( this );
+		
+		
+		// main card enter event
+		id_tf.addActionListener( this );
+		pw_tf.addActionListener( this );
+		
+		// chat card enter event
+		tf.addActionListener(this);
 		
 		setBounds( 300, 300, 300, 500 );
 		setVisible( true );
@@ -145,7 +148,7 @@ public class CardChattingLayorEx extends JFrame
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
 		
-		if( o == loginBtn ) {
+		if( o == loginBtn || o == id_tf || o == pw_tf ) {
 			String id = id_tf.getText().trim();
 			
 			if( id.length() < 1 )	{
@@ -169,12 +172,24 @@ public class CardChattingLayorEx extends JFrame
 				return;
 			}
 			
-			System.out.println( "???" );
-			
-			cl.show( this.getContentPane(), "card_2" );
-			
+			userId = id;
+
+			cardSection = CardSection.CHAT;
+			cl.show( this.getContentPane(), "chat" );
 		}
 		
+		// chat card
+		if( ( o == sendBtn || o == tf ) && cardSection == CardSection.CHAT)	{
+			String text = tf.getText(); 
+			if( text.trim().length() > 0 )	{
+				
+				ta.append( userId );
+				ta.append( " : " );				
+				ta.append( text );
+				ta.append( "\n" );
+				
+				tf.setText( "" );
+			}
+		}
 	}
-
 }

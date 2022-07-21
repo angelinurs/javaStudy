@@ -48,21 +48,17 @@ public class ArrangeButtonEx extends JFrame
 		Object o = e.getSource();
 		
 		if( o == left_b )	{
-			
-			System.out.println( "left" );
 //			top_p.setAlignmentX( Component.LEFT_ALIGNMENT );
 			top_p.setLayout( new FlowLayout( FlowLayout.LEFT) );
-			top_p.updateUI();
 		} else if( o == center_b )	{
-			System.out.println( "center" );
 //			top_p.setAlignmentX( Component.CENTER_ALIGNMENT );
 			top_p.setLayout( new FlowLayout( FlowLayout.CENTER ) );
-			top_p.updateUI();
 		} else if( o == right_b )	{
-			System.out.println( "right" );
 //			top_p.setAlignmentX( Component.RIGHT_ALIGNMENT );
 			top_p.setLayout( new FlowLayout( FlowLayout.RIGHT) );
-			top_p.updateUI();
 		}
+		
+		System.out.println( e.getActionCommand() );
+		top_p.updateUI();
 	}
 }

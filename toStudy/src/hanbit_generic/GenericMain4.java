@@ -22,10 +22,26 @@ class Gen3	extends Gen2 {
 public class GenericMain4<T> {
 	T v;
 	
-	public GenericMain<T>( T t ) { v = t; }
+	public GenericMain4( T t ) { v = t; }
+
+	/**
+	 * @return the v
+	 */
+	public T getV() { return v; }
+
+	/**
+	 * @param v the v to set
+	 */
+	public void setV(T v) { this.v = v; }
 
 	public static void main(String[] args) {
-
+		Gen3 g3 = new Gen3();
+		
+		GenericMain4<? super Gen3 > g4 = new GenericMain4<Gen>( g3 );
+		
+		Gen3 test = (Gen3) g4.getV();
+		
+		System.out.println( "Result of g4 : " + test.msg + ", " + test.genMsg() );
 	}
 
 }
