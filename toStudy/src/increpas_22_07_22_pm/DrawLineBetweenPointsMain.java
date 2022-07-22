@@ -1,4 +1,4 @@
-package increpas_22_07_21_am;
+package increpas_22_07_22_pm;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -7,7 +7,7 @@ import javax.swing.*;
 /* ******************************
  * override WindowAdapter class
  */
-class WindowAdapterClass extends WindowAdapter {
+class WindowAdapterOverride extends WindowAdapter {
 	
 	@Override
 	public void windowClosing(WindowEvent e) {
@@ -18,19 +18,22 @@ class WindowAdapterClass extends WindowAdapter {
 /* ******************************
  * override MouseAdapter class
  */
-class MouseAdapterClass extends MouseAdapter	{
+class MouseAdapterOverride extends MouseAdapter	{
 	
-	EventAdapterMain frame;
+	DrawLineBetweenPointsMain frame;
 	
 	@Override
-	public void mousePressed(MouseEvent e) {
+	public void mousePressed(MouseEvent e) {	
+		
+		frame.cv.flag = ( frame.cv.flag  )? false : true;
+
 		frame.cv.x = e.getX();
 		frame.cv.y = e.getY();
 		
 		frame.cv.repaint();
 	}
 
-	public MouseAdapterClass( EventAdapterMain frame ) {
+	public MouseAdapterOverride( DrawLineBetweenPointsMain frame ) {
 		this.frame = frame;
 	}
 
@@ -43,6 +46,21 @@ class MouseAdapterClass extends MouseAdapter	{
 	public void mouseExited(MouseEvent e) {
 		frame.centerPane.setBackground( Color.GRAY );
 	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		frame.cv.dragFlag = true;
+		frame.cv.beforeX = frame.cv.x;
+		frame.cv.beforeY = frame.cv.y;
+		
+		frame.cv.x = e.getX();
+		frame.cv.y = e.getY();
+		
+		frame.cv.repaint();
+	}
+	
+	
+	
 };
 
 /* ******************************
@@ -50,8 +68,15 @@ class MouseAdapterClass extends MouseAdapter	{
  */
 class DrawCircleCanvas extends Canvas {
 	Color c;
-	int x, y;
+	
+	int x = -1, y = -1;
+	int beforeX , beforeY;
 	int width = 10, height = 10;
+	
+	static int count = 0;
+	
+	boolean flag = false;
+	boolean dragFlag = false;
 
 	@Override
 	public void paint(Graphics g) {
@@ -63,7 +88,24 @@ class DrawCircleCanvas extends Canvas {
 		
 		g.setColor( c = new Color( red, green, blue ) );
 		
-		g.fillOval( x - ( width /2 ), y - ( height /2), width, height );
+		if( count != 0 ) {
+			g.fillOval( x - ( width /2 ), y - ( height /2), width, height );
+			
+			if( flag ) {
+				g.drawLine( beforeX, beforeY, x, y );
+			} else	{
+				beforeX = x;
+				beforeY = y;
+			}
+			
+		} else {
+			count = 1;
+		}
+		
+		if( dragFlag ) {
+			g.drawLine( x, y, beforeX, beforeY );
+			dragFlag = false;
+		}
 	}
 
 	@Override
@@ -76,12 +118,12 @@ class DrawCircleCanvas extends Canvas {
 /* ******************************
  * main Class
  */
-public class EventAdapterMain extends JFrame {
+public class DrawLineBetweenPointsMain extends JFrame {
 	
 	JPanel centerPane;
 	DrawCircleCanvas cv;
 	
-	public EventAdapterMain()	{
+	public DrawLineBetweenPointsMain()	{
 		super( "EventAdapter test" );
 		
 		add( cv = new DrawCircleCanvas() );
@@ -96,14 +138,14 @@ public class EventAdapterMain extends JFrame {
 //		setDefaultCloseOperation( EXIT_ON_CLOSE );
 		
 		// quit event listener
-		addWindowListener( new WindowAdapterClass() );
+		addWindowListener( new WindowAdapterOverride() );
 		
 		// frame mouse event
-		centerPane.addMouseListener( new MouseAdapterClass( this ) );
-		cv.addMouseListener( new MouseAdapterClass( this ) );
+		centerPane.addMouseListener( new MouseAdapterOverride( this ) );
+		cv.addMouseListener( new MouseAdapterOverride( this ) );
 	}
 
 	public static void main(String[] args) {
-		new EventAdapterMain();
+		new DrawLineBetweenPointsMain();
 	}
 };
