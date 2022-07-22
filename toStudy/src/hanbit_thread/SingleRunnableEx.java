@@ -3,9 +3,6 @@ package hanbit_thread;
 public class SingleRunnableEx implements Runnable {
 	private int[] temp;
 	
-	
-	
-
 	public SingleRunnableEx() {
 		temp = new int[ 10 ];
 		

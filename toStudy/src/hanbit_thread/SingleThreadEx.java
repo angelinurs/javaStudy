@@ -28,7 +28,6 @@ public class SingleThreadEx extends Thread {
 	public static void main(String[] args) {
 		SingleThreadEx st = new SingleThreadEx( "First" );
 		st.start();
-
 	}
 
 }

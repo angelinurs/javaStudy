@@ -3,6 +3,51 @@ package hanbit_util;
 import java.util.*;
 import static java.lang.System.out;
 
+class Able {
+	String empno;
+	int net, ejb, xml, total;
+	
+	public Able( int total ) { this.total = total; }
+	
+	public Able( String no, int n, int e, int x ) {
+		this.empno = no;
+		this.net = n;
+		this.ejb = e;
+		this.xml = x;
+		
+		this.total = n + e + x;
+	}
+	public int getTotal() { return this.total; }
+
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append( "empno : " ).append( empno );
+		sb.append( ", net : " ).append( net );
+		sb.append( ", ejb : " ).append( ejb );
+		sb.append( ", xml : " ).append( xml );
+		sb.append( "\n" );
+		
+		
+		return sb.toString(); 
+	}
+}
+
+class AbleComp implements Comparator<Able> {
+
+	@Override
+	public int compare(Able o1, Able o2) {
+		int var = 0;
+		
+		var = ( o1.getTotal() > o2.getTotal() ) ?  1 : 
+			  ( o1.getTotal() < o2.getTotal() ) ? -1 : 0;
+		
+		return var;
+	}
+
+}
+
 public class AbleEx1 {
 
 	public static void main(String[] args) {
@@ -41,6 +86,11 @@ public class AbleEx1 {
 		
 		for( Able al : new_v)
 			out.println( al.empno + ", " + al.getTotal());
+		
+		int index = Arrays.binarySearch(a, new Able( 235 ), comp );
+		
+		System.out.println( "240 이 검색된 index : " + index );
+		System.out.println( new_v.get( index ) );
 
 	}
 

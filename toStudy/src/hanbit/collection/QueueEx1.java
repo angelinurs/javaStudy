@@ -4,8 +4,8 @@ import java.util.*;
 import static java.lang.System.out;
 
 public class QueueEx1 {
-
-	public static void main(String[] args) {
+	
+	public  static void ex1() {
 		String[] item = {"java","Spring","Maven"};
 		
 		LinkedList<String> q = new LinkedList<String>();
@@ -21,6 +21,9 @@ public class QueueEx1 {
 			out.println( data + " remove!!");
 		
 		out.println(" Queue\'s size -> " + q.size() );
+	}
+	public static void main(String[] args) {
+		ex1();
 	}
 
 }

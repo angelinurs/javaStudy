@@ -37,9 +37,11 @@ public class GenericMain4<T> {
 	public static void main(String[] args) {
 		Gen3 g3 = new Gen3();
 		
-		GenericMain4<? super Gen3 > g4 = new GenericMain4<Gen>( g3 );
+		GenericMain4<? super Gen2 > g4 = new GenericMain4<Gen>( g3 );
 		
 		Gen3 test = (Gen3) g4.getV();
+		// error
+//		Gen3 test2 = g4.getV();
 		
 		System.out.println( "Result of g4 : " + test.msg + ", " + test.genMsg() );
 	}

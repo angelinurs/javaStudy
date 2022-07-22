@@ -1,72 +1,97 @@
 package increpas_22_07_21_am;
 
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+/* ******************************
+ * override WindowAdapter class
+ */
+class WindowAdapterClass extends WindowAdapter {
+	
+	@Override
+	public void windowClosing(WindowEvent e) {
+		System.exit(0);
+	}
+};
 
-public class EventAdapterMain extends JFrame 
-							  implements WindowListener {
+/* ******************************
+ * override MouseAdapter class
+ */
+class MouseAdapterClass extends MouseAdapter	{
+	
+	EventAdapterMain frame;
+	
+	@Override
+	public void mousePressed(MouseEvent e) {
+		frame.cv.x = e.getX();
+		frame.cv.y = e.getY();
+		
+		frame.cv.repaint();
+	}
+
+	public MouseAdapterClass( EventAdapterMain frame ) {
+		this.frame = frame;
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		frame.centerPane.setBackground( Color.ORANGE );
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		frame.centerPane.setBackground( Color.GRAY );
+	}
+};
+
+/* ******************************
+ * override Canvas class
+ */
+class DrawCircleCanvas extends Canvas {
+	Color c;
+	int x, y;
+	int width = 10, height = 10;
+
+	@Override
+	public void paint(Graphics g) {
+		g.setColor( c );
+		g.fillOval(x, y, width, height);
+	}
+	
+}
+
+/* ******************************
+ * main Class
+ */
+public class EventAdapterMain extends JFrame {
+	
+	JPanel centerPane;
+	DrawCircleCanvas cv;
 	
 	public EventAdapterMain()	{
 		super( "EventAdapter test" );
+		
+		add( cv = new DrawCircleCanvas() );
+		
+		centerPane = new JPanel();
+		centerPane.setBackground( Color.CYAN );		
+		
+		add( centerPane, BorderLayout.WEST );
 		
 		setBounds( 300, 300, 300, 300 );
 		setVisible( true );
 //		setDefaultCloseOperation( EXIT_ON_CLOSE );
 		
 		// quit event listener
-		addWindowListener( this );
+		addWindowListener( new WindowAdapterClass() );
+		
+		// frame mouse event
+		centerPane.addMouseListener( new MouseAdapterClass( this ) );
+		cv.addMouseListener( new MouseAdapterClass( this ) );
 	}
 
 	public static void main(String[] args) {
 		new EventAdapterMain();
-
 	}
-
-	@Override
-	public void windowOpened(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowClosing(WindowEvent e) {
-		int cmd = JOptionPane.showConfirmDialog( this, "Confirm to quit?", "Alert Message",JOptionPane.YES_NO_OPTION );
-		System.out.println( cmd );
-		
-//		if( cmd == JOptionPane.YES_OPTION ) System.exit( 0 );
-	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowActivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-}
+};

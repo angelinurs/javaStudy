@@ -21,6 +21,7 @@ public class MultiThreadEx implements Runnable {
 		MultiThreadEx srtl = new MultiThreadEx();
 		
 		Thread firstThread = new Thread( srtl, "- First Thread");
+//		firstThread.setPriority( Thread.MAX_PRIORITY );
 		firstThread.start();
 		
 		

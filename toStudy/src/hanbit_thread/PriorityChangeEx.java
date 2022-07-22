@@ -11,11 +11,9 @@ class SuperThreadPriority extends Thread	{
 		System.out.printf( "Thread name : %s \n",
 				Thread.currentThread().getName() );
 	}
-	
 }
 
 public class PriorityChangeEx extends SuperThreadPriority {
-	
 
 	public PriorityChangeEx(String name) {
 		super(name);
