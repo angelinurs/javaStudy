@@ -22,6 +22,10 @@ class MouseAdapterOverride extends MouseAdapter	{
 	
 	DrawLineBetweenPointsMain frame;
 	
+	public MouseAdapterOverride( DrawLineBetweenPointsMain frame ) {
+		this.frame = frame;
+	}
+	
 	@Override
 	public void mousePressed(MouseEvent e) {	
 		
@@ -29,12 +33,18 @@ class MouseAdapterOverride extends MouseAdapter	{
 
 		frame.cv.x = e.getX();
 		frame.cv.y = e.getY();
+		frame.cv.pressX = e.getX();
+		frame.cv.pressY = e.getY();
 		
 		frame.cv.repaint();
 	}
-
-	public MouseAdapterOverride( DrawLineBetweenPointsMain frame ) {
-		this.frame = frame;
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {		
+		frame.cv.relX = e.getX();
+		frame.cv.relY = e.getY();
+		
+		frame.cv.repaint();
 	}
 
 	@Override
@@ -46,21 +56,25 @@ class MouseAdapterOverride extends MouseAdapter	{
 	public void mouseExited(MouseEvent e) {
 		frame.centerPane.setBackground( Color.GRAY );
 	}
+	
+};
 
+/* ******************************
+ * override Mouse.Motion.Adapter class
+ */
+class MouseMotionAdapterOverride extends MouseMotionAdapter	{
+
+	DrawLineBetweenPointsMain frame;
+	
+	public MouseMotionAdapterOverride( DrawLineBetweenPointsMain frame ) {
+		this.frame = frame;
+	}
+	
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		frame.cv.dragFlag = true;
-		frame.cv.beforeX = frame.cv.x;
-		frame.cv.beforeY = frame.cv.y;
 		
-		frame.cv.x = e.getX();
-		frame.cv.y = e.getY();
-		
-		frame.cv.repaint();
 	}
-	
-	
-	
 };
 
 /* ******************************
@@ -72,6 +86,9 @@ class DrawCircleCanvas extends Canvas {
 	int x = -1, y = -1;
 	int beforeX , beforeY;
 	int width = 10, height = 10;
+	
+	int pressX, pressY;
+	int relX, relY;
 	
 	static int count = 0;
 	
@@ -103,7 +120,7 @@ class DrawCircleCanvas extends Canvas {
 		}
 		
 		if( dragFlag ) {
-			g.drawLine( x, y, beforeX, beforeY );
+			g.drawLine( pressX, pressY, relX, relY );
 			dragFlag = false;
 		}
 	}
@@ -112,7 +129,6 @@ class DrawCircleCanvas extends Canvas {
 	public void update(Graphics g) {
 		paint(g);
 	}
-	
 }
 
 /* ******************************
@@ -142,6 +158,8 @@ public class DrawLineBetweenPointsMain extends JFrame {
 		
 		// frame mouse event
 		centerPane.addMouseListener( new MouseAdapterOverride( this ) );
+		
+		cv.addMouseMotionListener( new MouseMotionAdapterOverride( this ) );
 		cv.addMouseListener( new MouseAdapterOverride( this ) );
 	}
 

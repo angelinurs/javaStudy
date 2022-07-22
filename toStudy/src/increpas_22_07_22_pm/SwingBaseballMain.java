@@ -35,12 +35,9 @@ public class SwingBaseballMain extends JFrame implements ActionListener {
 		
 		setNorthPane();
 		
-		add( ta = new JTextArea( 20, 20 ), BorderLayout.CENTER );
+		add( new JScrollPane( ta = new JTextArea( 20, 20 ) ), BorderLayout.CENTER );
 		
 		setSouthPane();
-		
-		
-		
 		
 		setBounds( 300, 300, 400, 300 );
 		setVisible( true );
@@ -82,6 +79,8 @@ public class SwingBaseballMain extends JFrame implements ActionListener {
 		southPane.add( resetBtn );
 		
 		add( southPane, BorderLayout.SOUTH );
+		
+		resetBtn.addActionListener( this );
 	}
 	
 
@@ -124,7 +123,7 @@ public class SwingBaseballMain extends JFrame implements ActionListener {
 			tf_2.setText( "" );
 			tf_3.setText( "" );
 			
-			ta.append( "" );
+			ta.setText( "" );
 		}
 		
 	}
