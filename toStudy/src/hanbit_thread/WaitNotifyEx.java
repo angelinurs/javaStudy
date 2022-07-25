@@ -57,5 +57,4 @@ public class WaitNotifyEx {
 		mother.start();
 		son.start();
 	}
-
 }

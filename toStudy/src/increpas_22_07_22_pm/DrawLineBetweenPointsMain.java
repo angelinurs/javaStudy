@@ -107,17 +107,18 @@ class DrawCircleCanvas extends Canvas {
 		
 		if( count != 0 ) {
 			g.fillOval( x - ( width /2 ), y - ( height /2), width, height );
-			
-			if( flag ) {
-				g.drawLine( beforeX, beforeY, x, y );
-			} else	{
-				beforeX = x;
-				beforeY = y;
-			}
-			
-		} else {
-			count = 1;
 		}
+			
+		if( count > 2 ) {
+			g.drawLine( beforeX, beforeY, x, y );
+			
+		} 
+		if( count > 1) 	{
+			beforeX = x;
+			beforeY = y;
+		}
+		
+		count++;
 		
 		if( dragFlag ) {
 			g.drawLine( pressX, pressY, relX, relY );
