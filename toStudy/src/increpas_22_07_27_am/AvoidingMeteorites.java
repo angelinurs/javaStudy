@@ -67,8 +67,13 @@ class MeteoVO extends Thread {
 		// 1. meteo 삭제.
 		frame.meteoVoList.remove( this );
 		
+		
 		// 2. exploit 추가
-		ExploitVO expVO = new ExploitVO( pos.x, pos.y ); 
+		ExploitVO expVO = new ExploitVO( );
+		
+		expVO.pos.x = (int) ( pos.getCenterX() - expVO.size/2 );
+		expVO.pos.y = (int) ( pos.getCenterY() - expVO.size/2 );
+		
 		frame.expVOList.add( expVO );
 	}
 };
@@ -78,16 +83,17 @@ class MeteoVO extends Thread {
  * - extends Thread
  */
 class ExploitVO extends Thread {
+	int size = 128;
 	Point pos;
 	
 	int index;
 	// 반복문을 gqp 만큼 돌때 index 1 증가 시킬 예정
 	int gap = 5;
 	int interval = gap;
-
-	public ExploitVO( int x, int y ) {
-		this.pos = new Point(x, y);
-	}
+	
+	public ExploitVO() { pos = new Point(); }
+	
+	public ExploitVO( int x, int y ) { pos = new Point(x, y); }
 	
 	public boolean move_index() {
 		if( interval == gap )
