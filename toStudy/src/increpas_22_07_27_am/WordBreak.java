@@ -122,7 +122,6 @@ public class WordBreak extends JFrame {
 		startBtn.addActionListener( new ActionListener() {
 			
 			@Override public void actionPerformed(ActionEvent e) {
-				Object o = e.getSource();
 				
 				if( thread == null ) {
 					
@@ -139,7 +138,7 @@ public class WordBreak extends JFrame {
 									// TODO: handle exception
 								}
 								
-								int index = (int)( Math.random() * wordList.size()-  1 );
+								int index = (int)( Math.random() * wordList.size() - 1 );
 								
 								WordVO vo = new WordVO( wordList.get( index ), WordBreak.this );
 								
