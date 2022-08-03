@@ -1,6 +1,9 @@
 package jump_thread;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.EventQueue;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -10,9 +13,8 @@ import javax.swing.JTextArea;
 /*
  * https://www.bitinvert.com/java/pause-resume/
  */
-public class PauseResume {
+public class PauseResume extends JFrame {
 	
-	private JFrame frame;
 	private JButton button;
 	private JTextArea ta;
 	
@@ -22,16 +24,16 @@ public class PauseResume {
 	private Thread counter;
 	
 	public PauseResume() {
-		this.frame = new JFrame( "Pause Resume button." );
-		this.button = new JButton( "Start" );
-		this.ta = new JTextArea( 5, 20 );
-		this.lock = new Object();
-		this.paused = true;
+		super( "Pause Resume button." );
+		
+		button = new JButton( "Start" );
+		ta = new JTextArea( 5, 20 );
+		lock = new Object();
+		paused = true;
 		
 		counter = new Thread( new Runnable() {
 			
-			@Override
-			public void run() {
+			@Override public void run() {
 				while( true )
 					work();
 			}
@@ -39,13 +41,13 @@ public class PauseResume {
 		
 		counter.start();
 		
-		frame.add( button, BorderLayout.NORTH );
-		frame.add( ta, BorderLayout.SOUTH );
+		add( button, BorderLayout.NORTH );
+		add( ta, BorderLayout.SOUTH );
 		
-		frame.pack();
+		pack();
 		
-		frame.setDefaultCloseOperation(  JFrame.EXIT_ON_CLOSE );
-		frame.setVisible( true );
+		setDefaultCloseOperation(  JFrame.EXIT_ON_CLOSE );
+		setVisible( true );
 	} 
 	
 	public void work()	{
@@ -54,20 +56,56 @@ public class PauseResume {
 			write( Integer.toString( idx ) );
 			sleep();
 		}
-		donw();
+		done();
 	}
 	
 	private void allowPause() {
 		synchronized ( lock ) {
-			while( )
+			while( paused )	{
+				try {
+					lock.wait();
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+		}
+	}
+	
+	private ActionListener pauseResume = 
+			new ActionListener() {
+				
+				@Override public void actionPerformed(ActionEvent e) {
+					paused = !paused;
+					button.setText( paused ? "Resume": "Pause" );
+					
+					synchronized ( lock ) {
+						lock.notifyAll();
+					}
+				}
+			};
+			
+	private void sleep() {
+		try {
+			Thread.sleep( 500 );
+		}catch ( InterruptedException ie) {
+			// TODO: handle exception
 		}
 	}
 
-
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	private void done() {
+		button.setText( "Start" );
 	}
 
+	private void write( String text ) {
+		ta.append( text );
+	}
+
+	public static void main(String[] args) {
+		EventQueue.invokeLater( new Runnable() {
+			
+			@Override public void run() {
+				new PauseResume();
+			}
+		});
+	}
 }

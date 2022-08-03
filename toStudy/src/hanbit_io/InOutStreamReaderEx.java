@@ -1,0 +1,10 @@
+package hanbit_io;
+
+public class InOutStreamReaderEx {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
