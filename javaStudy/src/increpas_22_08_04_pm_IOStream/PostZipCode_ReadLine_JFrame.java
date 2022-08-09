@@ -38,6 +38,7 @@ public class PostZipCode_ReadLine_JFrame extends JFrame {
 
 	JList<String> addressList;
 	
+	// plz downloads file
 	private final String path = "src/ZIPCODE_DB/";
 	
 	// Case 01.

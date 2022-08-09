@@ -3,10 +3,12 @@ package hanbit_io;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Random;
 import java.util.Scanner;
 
 //
@@ -25,6 +27,10 @@ class Rsp implements Serializable {
 	public void setDraw(int draw) { this.draw = draw; }
 
 	public void setName(String name) { this.name = name; }
+	
+	public String toString() {
+		return getWin() + " win, " + getDraw() + " draw, " + getLose() + " lose";
+	}
 };
 
 //
@@ -75,6 +81,47 @@ class ScoreLoader {
 };
 
 //
+class ScoreWriter {
+	public ScoreWriter( Rsp rsp ) {
+		String path = "./" + rsp.getName().trim() + "/userInfo.sav";
+		
+		File dir = new File( "./" );
+		
+		if( !dir.exists() ) {
+			dir.mkdir();
+		}
+		
+		File dir2 = new File( dir, rsp.getName().trim() );
+		
+		if( !dir2.exists() ) {
+			dir2.mkdir();
+		}
+		
+		ObjectOutputStream oos = null;
+		
+		try {
+			oos = new ObjectOutputStream(  new FileOutputStream( path ) );
+			oos.writeObject( rsp );
+			
+		} catch (FileNotFoundException fnfe ) {
+			fnfe.printStackTrace();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} finally {
+				try {
+					if( oos != null ) oos.close();
+					
+					System.out.println( "save done." );
+					
+				} catch (IOException ioe) {
+					ioe.printStackTrace();
+					System.out.println( "save fault" );
+				}
+		}
+	}
+};
+
+//
 public class RspMain {
 
 	public static void main(String[] args) {
@@ -98,11 +145,54 @@ public class RspMain {
 		lose = loader.getInfo().getLose();
 		draw = loader.getInfo().getDraw();
 		
+		rsp.setWin(win);
+		rsp.setDraw(draw);
+		rsp.setLose(lose);
+		
 		System.out.println( win + " win, " + lose + " lose, " + draw + " draw" );
-		
-		
-		
 
+		while( true ) {
+			int random = new Random().nextInt(3);
+			
+			System.out.println( "[ S ]cissors, [ R ]ock, [ P ]aper" );
+			System.out.println( "[ Q ]uit" );
+			
+			String user = sc.next();
+			int userCount = 0;
+			
+			switch(user.toUpperCase()) {
+			case "S" : userCount = 0;
+					   break;
+			case "R" : userCount = 1;
+ 					   break;
+			case "P" : userCount = 2;
+					   break;
+			}
+			
+			// compare to number of cases
+			if( userCount - random == -2 || userCount - random == 1 ) {
+				System.out.println( "Win" );
+				rsp.setWin( ++win );
+			} else if( userCount - random == 0 ) {
+				System.out.println( "Draw" );
+				rsp.setDraw( ++draw );
+			} else {
+				System.out.println( "Lose" );
+				rsp.setLose( ++lose );
+			}
+			
+			System.out.println( rsp.toString() );
+			System.out.println( "one more game ? " );
+			
+			String select = sc.next().trim();
+			
+			if( select.equalsIgnoreCase( "y" ) ) {
+				break;
+			}
+		}
+		
+		System.out.println( "It's over" );
+		
+		ScoreWriter sw = new ScoreWriter( rsp );
 	}
-
 }
