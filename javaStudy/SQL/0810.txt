@@ -1,0 +1,172 @@
+
+ 6. SUBQUERY
+	서브쿼리는 특정 SQL문장 안에 또 다른 SQL문장이 포함된 것!
+
+	[장점]
+	  DB에 여러 번 접속해야 하는 상황을 한번에 처리가 가능하게 해 준다.
+	  한마디로 DB접속되는 회수를 줄이고, 속도를 증가시킨다.
+
+	  - 서브쿼리를 사용하는 곳
+		1) WHERE, HAVING, FROM
+		2) INSERT구문에 INTO
+		3) UPDATE구문에 SET
+
+	예) salaries테이블에서 근무시작일이 2000년에 시작한 사원들에서 최소금액보다 더 작게 받는 사원의 정보를
+		사번, 급여, 근무시작일 순으로 출력해보자!
+
+	1)  먼저 근무시작일이 2000년도에 시작한 사원들의 급여들 중 최소급여를 알아낸다.
+		
+		SELECT date_format(from_date, '%Y') AS StartYear, MIN(salary) FROM salaries
+		WHERE date_format(from_date, '%Y') = '2000'
+		GROUP BY StartYear
+		ORDER BY StartYear;      
+
+		위의 결과가  38916이다.
+
+	2) 1)의 결과를 가지고 조건으로 건 다음의 문장    
+
+		SELECT emp_no, salary, from_date FROM salaries
+		WHERE salary < 38916; 
+		
+	위는 1)과 2)를 각각 한번씩 두번을 DB에 접속한 경우다. 이것을 서브쿼리를 활용하여 한번에 끝내자!
+
+		SELECT emp_no, salary, from_date FROM salaries
+		WHERE salary < (SELECT MIN(salary) FROM salaries
+				WHERE date_format(from_date, '%Y') = '2000'
+				GROUP BY date_format(from_date, '%Y')); 
+
+	문제) employees테이블에서 사번이 10001인 사원의 성별과 같고(AND),
+		사번이 10010번 사원보다 늦게 입사한 사원들의 정보를 
+		사번, 이름, 생일, 성별, 입사일 순으로 출력하시오!
+
+	1) 사번이 10001번인 사원의 성별구하기
+
+		SELECT gender FROM employees
+		WHERE emp_no = '10001';
+
+	2) 사번이 10010번인 사원의 입사일 구하기
+
+		SELECT hire_date FROM employees
+		WHERE emp_no = '10010';
+
+	3) 결과
+
+		SELECT emp_no, first_name, birth_date, hire_date
+		FROM employees
+		WHERE gender = (SELECT gender FROM employees
+			WHERE emp_no = '10001')
+		AND
+			hire_date > (SELECT hire_date FROM employees
+				WHERE emp_no = '10010');
+
+
+	문제) employees테이블에서 1965년 이후의 태어난 사원들 중에서
+		사번이 10001인 사원의 성별과 같고(AND),
+		사번이 10010번 사원보다 늦게 입사한 사원들의 정보를 
+		사번, 이름, 생일, 성별, 입사일 순으로 출력하시오!
+
+		SELECT e.emp_no, e.first_name, e.birth_date, e.hire_date
+		FROM (SELECT * FROM employees
+			WHERE birth_date >= DATE_FORMAT('1965-01-01', '%Y-%m-%d')) e
+		WHERE e.gender = (SELECT gender FROM employees
+			WHERE emp_no = '10001')
+		AND
+			e.hire_date > (SELECT hire_date FROM employees
+				WHERE emp_no = '10010'); 
+
+
+ 7. JOIN
+	조인은 관계형 데이터베이스에서 테이블과 테이블 간의
+	연결성을 의미한다.
+	
+	[종류]
+		1) InnerJoin(EquiJoin) : 조인 조건이 정확히 일치하는 경우 사용
+					(기본키와 외래키 활용)
+		2) OuterJoin : 조인 조건이 정확히 일치하는 행과
+				일치하지 않는 모든 행들을 출력할 때 사용
+		3) SelfJoin : 하나의 테이블에서 특정 컬럼과 연결성을 가지는 경우
+
+
+	예) dept_emp테이블에서 부서번호가 'd005'인 부서에서 근무하는 사원들의 사번을 모두 출력하시오!
+
+		SELECT dept_no, emp_no FROM dept_emp
+		WHERE dept_no = 'd005';
+
+		위는 그냥 하나의 테이블로 표현이 가능하다. 하지만 표현을 할 때 부서명을 출력해야 한다면
+		얘기는 달라진다. 즉, dept_emp라는 테이블로만으로는 해결을 할 수 없다.
+		부서명은 departments테이블이 가지고 있으므로 dept_emp테이블과 departments테이블을
+		조인을 해야 한다.
+
+		SELECT de.dept_no, d.dept_name, de.emp_no 
+		FROM dept_emp de, departments d
+		WHERE de.dept_no = 'd005' AND de.dept_no = d.dept_no;
+
+		위는 결과적으로는 맞다고 할 수 있지만 퍼포먼스 적으로 봤을 때는 다소 아쉬운 결과다.
+		서브쿼리를 적용하면 퍼포먼스 적으로도 좋은 결과로 만들 수 있다.
+
+		SELECT de.dept_no, d.dept_name, de.emp_no 
+		FROM (SELECT * FROM dept_emp WHERE dept_no = 'd005') de, departments d
+		WHERE de.dept_no = d.dept_no;
+		
+	
+	문제) employees테이블과 departments테이블 그리고 dept_emp테이블을 이용하여 각 사원이 어떤 부서에서 일하는지를
+		알아내는 SQL문을 작성하시오!
+		결과는 사번, 이름, 부서번호, 부서명 순으로 출력하시오!
+
+		SELECT dept_no, dept_name FROM departments;
+
+		여기서 사원의 사번을 같이 출력하고자 한다면 dept_emp테이블이 필요함!
+
+		SELECT emp_no, dept_no, dept_name FROM departments, dept_emp;
+
+		위의 내용에서 emp_no와 dept_nosms DEPT_EMP테이블에 있는 컬럼이며, 
+		dept_name만 departments테이블의 컬럼이므로 명시하면서 처리해야 한다.
+
+		SELECT dept_emp.emp_no, dept_emp.dept_no, departments.dept_name FROM departments, dept_emp
+		WHERE dept_emp.dept_no = departments.dept_no; 
+
+		이제 위의 결과에서 emp_no뒤에 employees테이블에 있는 first_name을 출력하면 된다. 
+
+		SELECT e.first_name, d.*
+		FROM employees e, (SELECT dept_emp.emp_no, dept_emp.dept_no, departments.dept_name FROM 						departments, dept_emp WHERE dept_emp.dept_no = departments.dept_no) d
+		WHERE e.emp_no = d.emp_no
+        		ORDER BY d.emp_no ASC;
+		
+	문제) 각 부서별 현재 부서장이 누군지 알아내시오!
+		출력은 부서번호, 부서명, 부서장 사번 순으로 출력하자! 부서장 사번은 Chief로 변경해서 출력하자!
+	
+		SELECT d.*, dm.emp_no FROM departments d, (SELECT * FROM dept_manager
+							WHERE date_format(to_date, '%Y') = '9999') dm
+		WHERE d.dept_no = dm.dept_no
+        		ORDER BY dept_no;
+
+	문제) 앞의 문제에서 부서장의 이름도 같이 출력하시오!
+
+		SELECT d.*, dm.emp_no, e.first_name FROM departments d, (SELECT emp_no,dept_no FROM dept_manager
+							WHERE date_format(to_date, '%Y') = '9999') dm,
+						employees e
+		WHERE d.dept_no = dm.dept_no AND dm.emp_no = e.emp_no
+        		ORDER BY dept_no;
+
+	문제) 부서별 사원들의 사번과 이름을 출력하시오! (부서번호, 사번, 이름 순)
+		d005  10010  홍길동
+		d005  10002  마루치
+
+		SELECT de.dept_no, de.emp_no, e.first_name FROM dept_emp de, employees e
+		WHERE de.emp_no = e.emp_no
+        		ORDER BY de.dept_no;
+
+	문제) 각 부서별 최대급여를 부서번호(dept_no), 사번(emp_no), 최대급여 순으로 출력하시오!
+ 		SELECT se.dept_no, se.emp_no, e.first_name, MAX(se.salary) 
+		FROM employees e,(SELECT de.dept_no, s.emp_no, MAX(s.salary) salary 
+    			FROM salaries s, dept_emp de
+			WHERE de.emp_no = s.emp_no
+			GROUP BY s.emp_no ORDER BY dept_no asc, salary desc
+    			) se
+		WHERE e.emp_no = se.emp_no
+		GROUP BY se.dept_no; 
+
+
+
+
+

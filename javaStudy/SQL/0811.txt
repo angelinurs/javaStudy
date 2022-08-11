@@ -1,0 +1,344 @@
+
+ 8. 내장함수
+	SQL문을 효과적으로 지원하기 위해 내부적으로 지원하는 함수들
+
+	SELECT abs(-19) FROM dual; -- 절대값 : 19
+	SELECT ceil(22.2) FROM dual; -- 올림 : 23
+	SELECT floor(22.8) FROM dual; -- 절삭 : 22
+	SELECT mod(10, 3) FROM dual; -- 10%3 = 1 : 나머지 값
+
+	이 외 length(), concat(), trim() 등 많은 함수들이 존재함!
+
+	먼저 테이블 생성해 보자
+	CREATE TABLE `employees`.`my_sal` (
+  		`idx` BIGINT NOT NULL AUTO_INCREMENT,
+  		`name` VARCHAR(30) NULL,
+  		`dept` VARCHAR(5) NULL,
+  		`salary` DECIMAL NULL,
+  		`bonus` DOUBLE NULL,
+  	PRIMARY KEY (`idx`));
+
+	:: 자원 추가
+		INSERT INTO my_sal (name, dept, salary, bonus) 
+		VALUES ('을불', 'd005', '55830', 0.2);
+
+	idx컬럼은 자동증가( AUTO_INCREMENT) 기능을 부여했으므로 알아서 1씩 증가하면서 대입된다.
+
+	-- my_sal테이블에서 각 부서별 급여의 합, 급여의 평균을 구하자!
+	SELECT dept, SUM(salary), AVG(salary), SUM(bonus), AVG(bonus) 
+	FROM my_sal
+	GROUP BY dept;
+	[결과]
+	-- d001	32000	32000.0000	0.3	0.3
+	-- d005	216490	72163.3333	0.2	0.2
+
+	위의 결과 중 AVG(bonus) 부분은 때에 따라 합에서 인원수를 나눠야 할 때가 있다.
+	하지만 AVG함수가 null인 것은 연산에서 제외시킨다. null값을 0으로 변경한 후
+	AVG함수를 사용하면 원하는 결과를 얻을 수 있다.
+
+	SELECT dept, SUM(salary), AVG(salary), SUM(bonus), AVG(bonus), AVG(IFNULL(bonus, 0)) 
+	FROM my_sal
+	GROUP BY dept;
+
+	IFNULL()은 해당 컬럼에서 NULL값을 찾아 다른 값으로 변경하여 처리할 때 사용한다.
+	오라클은 NVL()이다.
+
+	위의 결과에서 salary가 70000이상이면 '고액연봉자', 그렇지 않으면 '일반'을 출력하려 한다.
+	
+	SELECT idx, name, salary,
+    		IF(salary >= 70000,  '고액연봉자', '일반') as "구분"
+	FROM my_sal;
+
+	위의 내용에서 부서코드가 'd001'이면 '기획팀'으로 표현하고, 'd005'이면 '개발팀'이라고 출력하자!
+
+	SELECT idx, dept, name, CASE WHEN dept = 'd001' THEN '기획팀'
+				WHEN dept = 'd005' THEN '개발팀'
+				WHEN dept = 'd006' THEN '홍보팀'
+				WHEN dept = 'd009' THEN '회계팀' end AS d_name,
+		salary, bonus
+	FROM my_sal;
+
+
+
+ 9. 테이블 생성
+	
+	[구성]
+		CREATE TABLE  [테이블명] (
+			컬럼명1  자료형,
+			컬럼명2  자료형,
+			....
+			컬럼명n  자료형,
+			CONSTRAINT  [제약조건명]  제약조건
+		);
+
+	자료형의 종류
+	-숫자형
+		TINYINT   :  정수 : -128 ~ 127  
+		SMALLINT:  정수 : -32,768 ~ 32,767
+		INT	 :  정수 : 약-21억 ~ 약 21억
+		BIGINT	 :  정수 : 약 900경
+
+		FLOAT	 :  실수 : 소수점 7자리까지 연산
+		DOUBLE   :  실수 : 소수점 15자리까지 연산
+
+		DECIMAL(전체자리수, 소수점자리수)
+		예) DECIMAL(7,3) : 전체자리수가 7자리에서 소수점 이하 자리수가 3자리다.
+			결국 9999까지의 범위를 가지는 자료형이 된다.
+
+	-문자형
+		CHAR(n) : n만큼 자리수를 지정한 자료형 최대크기 255byte
+		예) CHAR(5)  에 들어간 값이 'A10' 라고 한다면 실제 테이블에는 'A10  '
+
+		VARCHAR(n): CHAR와 달리 3자를 입력하면 3자리의 데이터 공간만 사용함
+				최대크기 65535byte
+
+		LONGTEXT : 약 4GB
+
+	-날짜형
+		DATE : 년-월-일 형식 ('YYYY-MM-DD')
+		TIME : 시분초('HH:MM:SS')
+		DATETIME : 년-월-일 시:분:초  ('YYYY-MM-DD HH:MM:SS')
+		TIMESTAMP : UTC 시간대로 변환해 저장
+
+	- 기타형
+		GEOMETRY : 선, 점 또는 다각형 같은 공간 데이터
+		JSON : JSON문서
+		
+
+	예를 들어 책들을 저장하는 테이블을 만들어 보자!
+	(책에 대한 정보들을 테이블에 저장하기 위해 우리가 필요한 정보가 어떤 것들이 있는지를
+	선별하고 판단해야 한다.)
+	 - 책 제목, 저자, 출판사, 가격
+
+		CREATE TABLE book_t(
+			b_idx BIGINT AUTO_INCREMENT,
+			title VARCHAR(200) NOT NULL,
+			author VARCHAR(50),
+			brand VARCHAR(50),
+			price DECIMAL(6,0),
+			CONSTRAINT book_t_pk PRIMARY KEY(b_idx)
+		);
+	기본키가 설정된 b_idx와 같은 컬럼은 중복된 값이 저장되지 못하며, NULL값도 허용되지 않는다.
+	그리고
+	NOT NULL 것을 지정하게 되면 해당 컬럼은 절대로 NULL값을 허용하지 않는 제약조건을 부여한 것이다.
+
+	- 컬럼추가
+
+		[구성]
+			ALTER TABLE  [테이블명]
+			ADD  [추가할_컬럼명  자료형];
+
+		위의 book_t라는 테이블에 추가한 날짜를 의미하는 reg_date컬럼을 추가해 보자!
+
+			ALTER TABLE book_t
+			ADD reg_date DATE;
+
+	- 컬럼수정
+		[구성]
+			ALTER TABLE  [테이블명]
+			MODIFY  [수정할_컬럼명  자료형];
+
+		book_t테이블에 있는 price컬럼의 자료형을 소수점 이상의 자리수 8로 변경하고자 한다.
+
+			ALTER TABLE book_t
+			MODIFY price DECIMAL(8);
+
+		-- 컬럼명 수정 --
+			ALTER TABLE [테이블명]
+			RENAME COLUMN [대상_컬럼명]  TO  [새컬럼명];
+
+		book_t의 reg_date를 write_date로 변경하고자 한다.
+
+			ALTER TABLE book_t
+			RENAME COLUMN reg_date TO write_date;
+
+	- 컬럼삭제
+
+		[구성]
+			ALTER TABLE  [테이블명]
+			DROP COLUMN [삭제할컬럼명];
+
+		앞서 수정했던 write_date컬럼을 삭제해보자!
+
+			ALTER TABLE  book_t
+			DROP COLUMN write_date;
+
+
+ 10. 테이블 삭제
+
+	테이블은 물론이고, 해당 테이블의 모든 자원들 또한 삭제된다.
+
+	[구성]
+		DROP TABLE  [삭제할_테이블명];
+
+	book_t라는 테이블을 삭제하자!
+
+		DROP TABLE book_t;
+
+	문제) 메모장 기능(memo_t)을 구현하려 한다. 그렇게 하기 위해서
+		번호, 제목, 메모내용, 비밀번호, 글쓴이, IP, 글쓴날짜를 저장하는 테이블을 만들어야 한다.
+		이때 번호는 중복되지 않는 값이 저장되어야 하고, 컬럼명은 m_idx로 정하자! 
+		순차적인 번호가 알아서 증가하며 저장되는 기능을 부여해야 한다. 그리고
+		제목은 title, 메모내용은 content, 비밀번호는 pw, 글쓴이는 writer, 
+		글쓴날짜는 write_date로 각 컬럼명을 정한다.(기본키는 m_idx다.)
+
+		CREATE TABLE memo_t(
+			m_idx BIGINT AUTO_INCREMENT,
+			title VARCHAR(100) NOT NULL,
+			content LONGTEXT,
+			pw VARCHAR(20) NOT NULL,
+			ip  VARCHAR(20) NOT NULL,
+			writer VARCHAR(50),
+			write_date DATE,
+			CONSTRAINT memo_t_pk PRIMARY KEY(m_idx)
+		);
+
+
+ 11. 자원 추가(INSERT)
+	
+	[구성1]
+		INSERT INTO [테이블명] (컬럼명1, 컬럼명2, ... , 컬럼명n)
+		VALUES(값1, 값2, ... , 값n);
+
+		이는 해당 테이블에서 지정한 컬럼의 순서와 
+		값의 수를 정확히 일치하면서 값을 저장해야 한다.
+
+		INSERT INTO memo_t (title, content, pw, ip, write_date)
+		VALUES('제목1', 'ㅎㅎㅎ 내용이다', '1111', '192.168.0.31', NOW());
+
+	[구성2]
+		INSERT INTO [테이블명] VALUES(값1, 값2, ..., 값n);
+
+		이는 해당 테이블의 컬럼의 순서와 값의 수를 정확히 일치하면서 값을 저장해야 한다.
+
+		INSERT INTO memo_t
+		VALUES(default, '제목2', 'ㅎㅎㅎ 내용이다', '1111', '192.168.0.31', '글쓴이1', NOW());
+
+
+ 12. 자원 수정(UPDATE)
+	
+	특정 자원을 수정하고자 할 때 사용한다. 이때 조건을 부여하지 않으면, 테이블의
+	모든 자원들이 변경된다.
+
+	[구성]
+		UPDATE  [테이블명]
+		SET [컬럼명1 = 값1], [컬럼명2 = 값2],...,[컬럼명n = 값n] 
+		WHERE  [조건식];
+
+		조건식을 생략했다고 해서 문법적으로는 오류가 아니다. 단!
+		테이블의 모든 데이터가 영향을 받아 변경될 뿐이다.
+
+		UPDATE memo_t
+		SET writer = '을불'; 
+
+		위는 모든 행의 writer컬럼 값이 '을불'로 변경된다.
+		WHERE조건식을 생략하면 모든 자원들에게 영향을 주기 때문에
+		주의가 필요하다.
+
+		문제) m_idx가 2번인 자원의 writer의 값을 '어두일미'로 변경하자!
+
+		UPDATE memo_t
+		SET writer = '어두일미', write_date = '2022-08-05'
+		WHERE m_idx = 2;
+		
+ 13. 자원 삭제(DELETE)
+
+	자원 삭제할 때 사용! (개인적으로 실무에서 거의 사용빈도 낮음)
+
+	[구성]
+		DELETE FROM [테이블명]
+		WHERE [조건식];
+
+	예) memo_t테이블에서 m_idx값이 1번인 자원을 삭제하자!
+
+		DELETE FROM memo_t
+		WHERE m_idx = 1;
+
+	예) memo_t테이블에서 m_idx의 값이 2보다 큰 자원들을 모두 삭제하자!
+
+		DELETE FROM memo_t
+		WHERE m_idx > 2;
+
+	예) memo_t테이블에서 m_idx가 3이거나, 7, 또는 17 또는 50인
+		자원들만 삭제하자!
+
+		DELETE FROM memo_t
+		WHERE m_idx = 3 OR m_idx = 7 OR
+			m_idx = 17 OR m_idx = 50;
+
+		DELETE FROM memo_t
+		WHERE m_idx IN (3, 7, 17, 50);		
+
+
+
+ 14. 데이터 모델링
+
+	1) 논리적모델링 : 데이터베이스 구축의 요구분석 단계에 해당됨
+			Entity(테이블 등)에 필요한 속성(컬럼) 들을 정의하고, 괄계를 
+			이루기 위해 관련 작업을 포함
+
+	2) 물리적모델링 : 데이터베이스 구축의 설계 단계에 해당됨
+			데이터 형식과 각종 제약조건, 인덱스 등을 설정하는 작업
+
+   14-1. DB관계도 (ERD - Entity - Relationship Diagram) 방법론
+
+	논리적 모델은 나중에 데이터베이스의 테이블이 됨!
+
+	사원(emp)			부서(dept)
+	------------			----------------	
+	|사번  P.K	|			|부서코드  P.K |
+	|이름	|			|부서명	      |
+	|연락처	|			----------------
+	------------
+
+
+	예) 도서 대여 프로그램에 필요한 정보들을 설계해 보자!
+
+	회원정보
+	회원ID(P.K)	회원명	연락처	주소
+	sky011		신경영	010	서울시 관악구
+	maru		마루치	010	서울시 구로구
+
+	CREATE TABLE member_t(
+		m_id  VARCHAR(50),
+		m_name  VARCHAR(50) NOT NULL,
+		m_phone VARCHAR(20),
+		m_addr  VARCHAR(50),
+		CONSTRAINT member_t_pk PRIMARY KEY(m_id)
+	);
+
+
+	도서정보
+	도서ID(P.K)	도서명		저자	출판사	가격
+	0001		자바바이블	오경주	한빛	29000
+	0002		너의흔적		경요	모름	12000
+
+	DROP TABLE book_t;
+	CREATE TABLE book_t(
+		b_id  BIGINT AUTO_INCREMENT,
+		b_title VARCHAR(50) NOT NULL,
+		b_author VARCHAR(50),
+		b_press VARCHAR(30),
+		b_price DECIMAL(8) NOT NULL,
+		CONSTRAINT book_t_pk PRIMARY KEY(b_id)
+	);
+
+
+	대여현황
+	고유번호(P.K)	회원ID(F.K)   도서ID(F.K) 	대여일	반납일	대여료
+	01		maru	     0002		22/8/2	22/8/5	1200
+	02		maru	     0001		22/8/3		
+
+	CREATE TABLE rent_story(
+		idx BIGINT AUTO_INCREMENT,
+		m_id  VARCHAR(50),
+		b_id  BIGINT,
+		rent_date DATE,
+		return_date DATE,
+		pay DECIMAL(6),
+		CONSTRAINT rent_story_fk1 FOREIGN KEY(m_id) REFERENCES member_t(m_id),
+		CONSTRAINT rent_story_fk2 FOREIGN KEY(b_id) REFERENCES book_t(b_id)
+	);
+
+
+   

@@ -1,0 +1,97 @@
+
+MySQL 8.x 버전 
+ - 관계형 데이터베이스 관리시스템(RDBMS) - 오라클, MySQL, MS-SQL, DB2,...
+
+   이런 관계형 데이터베이스는 1970년 6월에 codd박사의 "대량 공용 데이터베이스의 관계형 모델"
+이라는 논문을 발표하면서 관심을 받게되어 지금까지 발전해 왔다.
+
+   1-1. 관계형 모델의 구성요소
+      1) 데이터를 저장하는 객체(Table) 또는 관계들의 집합
+      2) 다른 관계를 생성하기 위해 관계에 가해지는 이련의 연산자들의 집합
+      3) 데이터들에 대한 무결성이 보장 - (참조 무결성 강화)
+
+ 2. SQL문장 
+    SQL문장은 대/소문자 구별하지 않지만, 비교값은 구별한다.
+    예를 들어 찾고자 하는 문장이 'test'라는 것과 'Test'는 다르다.
+
+    SQL문장은 한줄 또는 여러 줄에 입력할 수 있다.
+    문장의 끝에는 항상 세미콜론(;)으로 맺어야 한다. (어떤 Tool에는 안해도 됨)
+
+    2-1. 기본적인 SQL문의 종류
+      - DML(Data Manipulation Language) : 데이터 조작어
+	수정(UPDATE), 추가(INSERT), 삭제(DELETE), 검색(SELECT)의 기능을 가진 문장
+
+      - DDL(Data Definition Language) : 데이터 정의어
+	테이블 생성(CREATE Table) 또는 삭제(DROP Table), 수정(ALTER Table)등의 기능을 가진 문장
+
+      - DCL(Data Control Language) : 데이터 제어어
+	권한을 부여(GRANT)하고, 수거(REVOKE)하는 등의 기능을 가진 문장
+
+    2-2. SELECT문
+	데이터베이스에서 저장되어 있는 자원들을 검색할 때 사용하는 문장!
+
+	[구성]
+		SELECT  [* 또는 컬럼명1, 컬럼명2, 컬럼명3,..., 컬럼명n]
+		FROM  [테이블명]
+		WHERE  [조건식]
+		ORDER BY [정렬의 기준이 되는 컬럼명]  [ASC 또는 DESC] (생략시는 오름차순이다.)
+
+	예) employees테이블의 모든 자원들을 검색하자!
+
+		SELECT * FROM employees.employees;
+
+	예) 다음 문장을 보고 해석하시오!
+
+		SELECT   emp_no, first_name, last_name, hire_date   FROM   employees.employees;
+
+		해석: employees테이블에서 사번(emp_no), 이름(first_name), 
+			성씨(last_name), 입사일(hire_date) 순으로 자원들을 출력하시오!
+
+
+    	문제) employees테이블에서 사번, 이름, 생일, 입사일을 순서대로 보여주는 SELECT문을 완성하시오!
+
+		SELECT   emp_no,first_name, birth_day, hire_date FROM employees.employees;
+
+
+	:: 여러 갱의 컬럼을 하나로 묶어서 표현할 수 있다. 그리고 연산자를 이용하여 없는 컬럼을 잠시 만들어서
+		표현할 수 있다.
+
+	 예) SELECT  emp_no, CONCAT(first_name, ' ', last_name) AS fullName  FROM employees.employees;
+
+    2-3. 조건부여(WHERE)
+
+	일반적으로 테이블에 있는 자원들을 조회할 때가 많다. 이때
+	사용자가 원하는 자원들을 간단한 연산자 등을 이용하여 WHERE절에 조건으로 기술하면
+	원하는 자원들을 검색할 수 있다.
+
+	예) employees테이블에서 입사일(hire_date)이 1999년 이후에 입사한 사원들의 정보를
+		사번, 이름, 입사일 순으로 출력해보자!
+
+	SELECT emp_no, first_name, hire_date 
+	FROM employees
+	WHERE hire_date >= '1999-01-01';
+
+	주의) SQL문장을 구현하다보면 비교값과 같은 자원들을 검색하기위해 ==연산자를 사용하는
+		실수를 범한다. SQL문법상 ==연산자는 존재하지 않으며 =로 같음을 비교한다.
+
+	예) employees테이블에서 성별(gender)가 'F'인 사원들의 정보를 사번, 이름, 성별 순으로 출력해 보자!
+
+		SELECT emp_no, first_name, gender  FROM employees  WHERE gender = 'F';
+
+  	TIP) 오라클에서는 비교값 'f'로 비교하면 오류는 아니지만 검색되는 자원이 없다. 이유는
+		오라클에서 비교값들은 대/소문자를 구별하기 때문이다.
+
+	문제) employees테이블에서 입사일이 1999년 이후이면서 성별이 여자인 사원들의 정보를
+		사번, 이름, 성별, 입사일 순으로 출력하시오!
+
+		SELECT emp_no, first_name, gender, hire_date 
+		FROM employees
+		WHERE hire_date >= '1999-01-01' AND gender = 'F';
+
+
+
+
+
+
+
+  

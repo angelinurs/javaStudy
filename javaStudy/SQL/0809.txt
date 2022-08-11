@@ -1,0 +1,254 @@
+
+ 3. 연산자
+    
+      - 산술연산자 : +, -, *, / ,  나머지값 구하기: %, MOD
+      - Boolean연산자 : IS : 좌변과 우변의 값이 모두 TRUE 또는 FALSE
+		    IS NOT : TRUE와 FALSE를 구분할 때 사용
+      - 논리연산자: 
+	AND, && : 양쪽모두 TRUE일 때만 TRUE
+	OR, || : 한쪽이 TRUE이면 TRUE
+
+      - 비교연산자:
+	= : 양쪽 값이 서로 같음 (자바에서는 대입연산자)
+	!=, <> : 양쪽 값이 서로 다름
+	>: (왼쪽이) 크다
+	<: (왼쪽이) 작다.
+	>=: (왼쪽이) 크거나 같다
+	<=: (왼쪽이) 작거나 같다
+
+      - SQL연산자
+	BETWEEN연산자: 특정 값1에서 특정 값2의 사이(범위)의 정보를 얻을 때 사용
+	
+	[구성]
+		WHERE [컬럼명]  BETWEEN  값1  AND  값2
+
+	예) 1997년도에 입사한 사원들의 정보를 사번, 이름, 입사일 순으로 출력할 때 BETWEEN연산자를
+		사용할  때 어떻게 될까?
+
+		SELECT emp_no, first_name, hire_date
+		FROM employees
+		WHERE hire_date BETWEEN '1997-01-01' AND '1997-12-31';
+
+	문제) salaries테이블에서 급여(salary)가 70000에서 80000사이인 사원들의 정보를 출력하시오
+		사번과 급여만 출력하자
+
+		SELECT emp_no, salary
+		FROM salaries
+		WHERE salary BETWEEN 70000 AND 80000;
+
+      - IN연산자
+	특정 목록의 결과값에서 비교값이 속하는지?를 가려내는 연산자
+
+	[구성]
+		WHERE [컬럼명]  IN(값1, 값2, ...., 값n)
+
+	예) 급여가 75323, 75000, 76000, 76500을 받는 사원들의 정보를 사번과 급여 순으로
+		salaries테이블에서 골라 출력해보자!
+
+		[결과1] 논리연산자를 사용한 경우
+
+			SELECT emp_no, salary  FROM salaries
+			WHERE salary = 75323 OR salary = 75000 OR salary = 76000 OR salary = 76500;
+			
+		[결과1] IN연산자를 사용한 경우
+
+			SELECT emp_no, salary  FROM salaries
+			WHERE salary IN(75323, 75000, 76000, 76500);
+
+	문제) employees테이블에서 사번이 20010, 18500, 16700, 20200, 24500번인 사원들의 정보를
+		사번, 이름, 입사일, 성별 순으로 출력하시오!
+
+			SELECT emp_no, first_name, hire_date, gender 
+			FROM employees
+			WHERE emp_no IN(20010, 18500, 16700, 20200, 24500);
+
+      - LIKE연산자
+	지정한 문자형태와 일치한 자원들을 검색한다.
+
+	[문자형식]
+		% : 모든 값
+		_ : 하나의 값
+
+	1)  'M%' : M으로 시작하는 모든 값 (Michael, Mike, Mk14,...)
+	2)  '%n'  : n으로 끝나는 모든 값
+	3)  '%a%': 중간에 a가 있는 모든 값 ( 1aprt100 , apple, ... )
+	4) 'M______' : M으로 시작하는 값들 중 전체 문자열의 길이가 총 7자인 값 ( Michael )
+
+	예) employees테이블에서 입사를 1997년도에 한 사원들의 정보를
+		사번, 이름, 입사일 순으로 출력하자! 단, LIKE연산자를 활용해야 한다.
+
+	[결과1] LIKE연산자를 사용하지 않은 경우
+
+		SELECT emp_no, first_name, hire_date FROM employees
+		WHERE hire_date BETWEEN '1997-01-01'  AND  '1997-12-31';
+
+	[결과2] LIKE연산자를 사용한 경우
+
+		SELECT emp_no, first_name, hire_date FROM employees
+		WHERE hire_date LIKE '1997%';
+
+
+ 4. 정렬 (ORDER BY)
+
+	질의 결과에 반환되는 행(자원)들을 정렬하는데 사용된다.
+
+	- ORDER BY 절은 항상 SELECT문의 가장 뒤에 기술된다.
+
+	[구성]
+		ORDER BY [정렬기준_컬럼명1]  [ASC 또는 DESC], 
+			[정렬기준_컬럼명2]  [ASC 또는 DESC]
+
+		먼저 기술된 정렬기준에 의해 결과가 같은 것이 있다면 (,) 뒤에 있는
+		다음의 정렬기준으로 순서를 정한다.
+	
+	예) salaries테이블에서 급여가 많은 사원들부터 출력하시오!
+		단, 급여가 같으면 근무 시작일(from_date)이 빠른 사원부터 
+		사번, 급여, 근무시작일 순으로 출력하자!
+
+		SELECT emp_no, salary, from_date
+		FROM salaries
+		ORDER BY salary DESC, from_date ASC;
+
+	문제) employees테이블에서 입사일이 2000년도이고 입사가 가장 최근인 사원들부터 검색결과를 얻어야 한다.
+		만약 입사일이 같은 경우는 생일이 빠른 사원이 먼저 출력되어야 한다.
+		
+		SELECT * FROM employees
+		WHERE hire_date LIKE '2000%' 
+		ORDER BY hire_date DESC, birth_day ASC;
+
+
+
+ 5. SQL함수
+	기본적으로 쿼리(질의)문을 더욱 강력하게 하고, 데이터 값을 조작하는데 도움이 되는 것이
+	바로 SQL함수다.
+
+	-SQL함수의 종류
+	1) 문자함수
+	2) 날짜함수
+	3) 그룹함수
+	4) 숫자함수
+
+
+	5-1. 문자함수
+		- UPPER(값) : 주어진 값을 대문자로 변환
+		- LOWER(값) : 주어진 값을 소문자로 변환
+		- SUBSTRING(값, start_index, 길이) : 주어진 값에서 start_index부터 길이만큼 잘라낸다.
+						만약 길이이 없을 때는 start_index부터 끝까지 잘라낸다.
+		- CONCAT(값1, 값2, ... , 값n) : 주어진 값들을 하나의 문자열로 연결한다.
+		- TRIM(값) : 주어진 값의 앞/뒤 공백을 제거한다.
+		- replace(값, n1, n2) : 값에서 n1을 찾아 n2로 변경한다.
+		- instr(값, n1) : 값에서 n1을 찾아 위치값을 반환한다. 찾지 못하면 0을 반환함(자바의 indexOf와 비슷함)
+		- LENGTH(값) : 값의 길이
+
+		예) employees테이블에서 이름과 성씨를 full_name이라는 컬럼으로 합쳐서 표현하자!
+
+		SELECT emp_no, CONCAT(first_name, last_name) AS full_name, hire_date, birth_date
+		FROM employees
+		WHERE birth_date >= '1965-01-01';
+
+		예) employees테이블에서 이름과 성씨를 하나로 묶어서 표현하고, 성씨는 모두 
+			대문자로 표현하자!
+
+		SELECT emp_no, CONCAT(first_name, last_name) AS full_name, UPPER(last_name), birth_date
+		FROM employees
+		WHERE birth_date >= '1965-01-01';
+
+		예) employees테이블에서 생년만 추출하시오
+
+		SELECT emp_no, first_name, birth_date,  SUBSTRING(birth_date, 1, 4) AS b_year
+		FROM employees
+		WHERE birth_date >= '1965-01-01';
+		
+		예) employees테이블에서 이름 중에 'ae'를 '**'로 변환하여 출력하시오
+
+		SELECT emp_no, first_name, REPLACE(first_name, 'ae', '**') as re_name, LENGTH(first_name)
+		FROM employees
+		WHERE birth_date >= '1965-01-01';		
+
+	5-2. 날짜함수
+
+		- now() : 시스템의 현재 시각을 표현함
+
+		- date_add(날짜, INTERVAL값 단위) : 주어진 날짜를 기준으로 날짜를 연산하여 준다.
+
+		- date_format(날짜, 형식) : 주어진 날짜형식에 맞춰 날짜 데이터 반환한다.
+
+		예) 현재 날짜 알아내기
+		
+			SELECT now() FROM dual; 
+		
+		예) 현재 날짜로부터 1년 후를 알아보자!
+
+			SELECT now() as c_date, date_add(now(), INTERVAL 1 YEAR) as after_1Year FROM dual; 
+
+		예) 현재로부터 1달 후를 알아보자!
+			
+			SELECT now() as c_date, date_add(now(), INTERVAL 1 MONTH) as after_1m FROM dual;  
+
+			SELECT now() as c_date, date_add('2022-12-22', INTERVAL 1 MONTH) as after_1m FROM dual; 
+
+		예) 현재로부터 3달 전 알아보자!
+
+			SELECT now() as c_date, date_add(now(), INTERVAL -3 MONTH) as before_1m FROM dual;  
+
+
+		- date_format에서 사용되는 형식(키워드)
+			1) 달 이름 : %M ,   MM형식의 월 : %m
+			2) 요일 이름 : %W
+			3) YYYY형식의 년도 : %Y
+			4) YY형식의 년도 : %yy
+			5) DD형식의 날짜 : %d
+			6) D형식의 날짜 : %e
+			7) HH형식의 시간(24시간제) : %H
+			8) HH형식의 시간(12시간제) : %h
+			9) MM형식의 분 : %i
+			10) SS형식의 초 :  %s
+			11) AM/PM : %p
+
+		예) yy/mm/dd  hh:mi:ss형식의 날짜
+	
+			SELECT now(), DATE_FORMAT(now(), '%y/%m/%d %H:%i:%s') FROM dual;
+	
+
+
+	5-3. 그룹함수
+		지금까지는 하나의 테이블을 그룹으로 인식하고 진행했지만 앞으로는 하나의 테이블에서도
+		그룹을 만들어서 결과를 얻어내야 한다.
+
+		SELECT COUNT(*) FROM dept_emp
+		GROUP BY dept_no;
+
+		문제) dept_emp테이블에서 부서코드(dept_no)로 그룹환 한 후 인원이 50000명 이상인
+			부서만 부서코드, 인원수 순으로 출력하시오!
+
+			SELECT dept_no, COUNT(*) FROM dept_emp 
+			group by dept_no having COUNT(*) >= 50000;
+
+		*** 조건을 부여했을 때 그룹함수가 있다면 having절에 기술한다.
+			그리고 having절은 group by절 뒤에 기술한다.
+
+
+		문제) salaries테이블에서 근무시작일이 1996년도인 사원들의 수를 구하자!
+
+			SELECT COUNT(*) FROM salaries WHERE from_date LIKE '1996%';
+
+		*** 조건식에 그룹함수가 없다면 WHERE절에 기재해도 된다.
+
+		문제) salaries테이블에서 각 사원별 재계약 건수와 급여의 합(SUM)을 구하자!
+
+			SELECT emp_no, COUNT(*), SUM(salary) FROM salaries
+			GROUP BY emp_no;
+
+		문제) salaries테이블에서 각 사원별 재계약이 15년이상 한 사원의 정보를
+			 사번, 재계약 수, 급여의 최대값, 급여의 최소값을 구하자!
+
+			SELECT emp_no, COUNT(*), MAX(salary), MIN(salary), AVG(salary)
+			FROM salaries
+			GROUP BY emp_no
+			HAVING COUNT(*) >= 15;
+		
+
+
+
+
+

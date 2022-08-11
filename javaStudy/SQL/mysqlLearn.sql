@@ -501,6 +501,85 @@ from departments d,
 where de.dept_no = d.dept_no and e.emp_no = de.emp_no
 order by de.emp_no;
 
+-- ex 5.
+-- present each department max salary
+-- preparing
+select d.*, s.*, max( s.salary ) MaxSalary
+from dept_emp d, salaries s
+where d.emp_no = s.emp_no 
+	and d.from_date = s.from_date 
+    and d.to_date = s.to_date
+group by d.dept_no
+order by d.dept_no;
+
+-- 
+select * 
+from dept_emp de,
+	 (
+     select d.dept_no , max( s.salary ) MaxSalary
+	 from dept_emp d, salaries s
+	 where d.emp_no = s.emp_no 
+		and d.from_date = s.from_date 
+		and d.to_date = s.to_date
+	 group by d.dept_no
+     ) ds
+where de.dept_no = ds.dept_no
+order by de.dept_no;
+
+-- 
+select d.emp_no, d.dept_no ,s.salary
+from dept_emp d, salaries s
+where d.emp_no = s.emp_no 
+	and d.from_date = s.from_date 
+	and d.to_date = s.to_date
+order by d.emp_no;
+
+-- 
+select d.emp_no, d.dept_no , salary
+from dept_emp d, salaries s
+where d.emp_no = s.emp_no 
+	and d.from_date = s.from_date 
+	and d.to_date = s.to_date
+-- group by d.dept_no 
+order by d.dept_no;
+
+-- 
+select t.emp_no, t.dept_no, t.salary
+from (
+	select d.emp_no, d.dept_no , salary
+	from dept_emp d, salaries s
+	where d.emp_no = s.emp_no 
+		and d.from_date = s.from_date 
+		and d.to_date = s.to_date
+	) t
+group by t.dept_no
+having max( t.salary )
+order by t.dept_no;
+
+-- right
+SELECT de.dept_no, s.emp_no, MAX(s.salary) as salary 
+FROM salaries s, dept_emp de
+WHERE de.emp_no = s.emp_no
+	-- and de.from_date = s.from_date 
+	-- and de.to_date = s.to_date
+GROUP BY s.emp_no 
+ORDER BY dept_no asc, salary desc; -- 정렬 된 상태로 오지 않으면 않됨.
+
+-- check max salary in `d001` department
+select * from departments where dept_no = (
+	select dept_no 
+	from dept_emp
+	where emp_no = (
+		select emp_no
+		from salaries s
+		where s.salary = 145128
+	)
+);
+
+select *
+from dept_emp
+where emp_no = 66430;
+
 -- ( outer join )
 -- 조인 조건이 정확히 일히하는 행과
 -- 일치하지 않는 모든 행들을 출력할 때 사용.
@@ -512,3 +591,193 @@ order by de.emp_no;
 select * 
 from employees natural join dept_emp;
 
+-- 22_08_11
+-- 8. 내장함수
+--	SQL문을 효과적으로 지원하기 위해 내부적으로 지원하는 함수들
+
+SELECT abs(-19) FROM dual; -- 절대값 : 19
+SELECT ceil(22.2) FROM dual; -- 올림 : 23
+SELECT floor(22.8) FROM dual; -- 절삭 : 22
+SELECT mod(10, 3) FROM dual; -- 10%3 = 1 : 나머지 값
+
+-- 이 외 length(), concat(), trim() 등 많은 함수들이 존재함!
+
+-- 먼저 테이블 생성해 보자
+CREATE TABLE `employees`.`my_sal` (
+	`idx` BIGINT NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(30) NULL,
+	`dept` VARCHAR(5) NULL,
+	`salary` DECIMAL NULL,
+	`bonus` DOUBLE NULL,
+PRIMARY KEY (`idx`));
+
+-- :: 자원 추가
+INSERT INTO my_sal (name, dept, salary, bonus) 
+VALUES ('을불', 'd005', '55830', 0.2);
+
+-- idx컬럼은 자동증가( AUTO_INCREMENT) 기능을 부여했으므로 알아서 1씩 증가하면서 대입된다.
+
+-- my_sal테이블에서 각 부서별 급여의 합, 급여의 평균을 구하자!
+SELECT dept, SUM(salary), AVG(salary), SUM(bonus), AVG(bonus) 
+FROM my_sal
+GROUP BY dept;
+-- [결과]
+-- d001	32000	32000.0000	0.3	0.3
+-- d005	216490	72163.3333	0.2	0.2
+
+-- 위의 결과 중 AVG(bonus) 부분은 때에 따라 합에서 인원수를 나눠야 할 때가 있다.
+-- 하지만 AVG함수가 null인 것은 연산에서 제외시킨다. null값을 0으로 변경한 후
+-- AVG함수를 사용하면 원하는 결과를 얻을 수 있다.
+
+SELECT dept, SUM(salary), AVG(salary), SUM(bonus), AVG(bonus), AVG(IFNULL(bonus, 0)) 
+FROM my_sal
+GROUP BY dept;
+
+-- IFNULL()은 해당 컬럼에서 NULL값을 찾아 다른 값으로 변경하여 처리할 때 사용한다.
+-- 오라클은 NVL()이다.
+
+-- 위의 결과에서 salary가 70000이상이면 '고액연봉자', 그렇지 않으면 '일반'을 출력하려 한다.
+
+SELECT idx, name, salary,
+		IF(salary >= 70000,  '고액연봉자', '일반') as "구분"
+FROM my_sal;
+
+-- 위의 내용에서 부서코드가 'd001'이면 '기획팀'으로 표현하고, 'd005'이면 '개발팀'이라고 출력하자!
+
+SELECT idx, dept, name, CASE WHEN dept = 'd001' THEN '기획팀'
+							WHEN dept = 'd005' THEN '개발팀'
+							WHEN dept = 'd006' THEN '홍보팀'
+							WHEN dept = 'd009' THEN '회계팀' end AS d_name,
+	salary, bonus
+FROM my_sal;
+
+-- 22_08_11
+-- create table
+CREATE TABLE book_t(
+	b_idx BIGINT AUTO_INCREMENT,
+	title VARCHAR(200) NOT NULL,
+	author VARCHAR(50),
+	brand VARCHAR(50),
+	price DECIMAL(6,0),
+	CONSTRAINT book_t_pk PRIMARY KEY(b_idx)
+);
+
+-- 기본키가 설정된 b_idx와 같은 컬럼은 중복된 값이 저장되지 못하며, NULL값도 허용되지 않는다.
+-- 그리고
+-- NOT NULL 것을 지정하게 되면 해당 컬럼은 절대로 NULL값을 허용하지 않는 제약조건을 부여한 것이다.
+
+-- add column
+ALTER TABLE book_t
+ADD reg_date DATE;
+
+-- modify column data type
+ALTER TABLE book_t
+MODIFY price DECIMAL(8);
+
+-- rename column name 
+ALTER TABLE book_t
+RENAME COLUMN reg_date TO write_date;
+
+-- delete column
+ALTER TABLE  book_t
+DROP COLUMN write_date;
+
+-- delete table
+DROP TABLE book_t;
+
+-- ex 01.
+-- create table `memo_t`
+create table `employees`.`memo_t` (
+	`m_idx` bigint auto_increment,
+    `title` varchar( 256 ) not null,
+    `content` longtext,
+    `pw` varchar( 256 ) not null,
+    `writer` varchar( 256 ) not null,
+    `write_date` date,
+    constraint memo_t_pk primary key( m_idx )
+);
+
+desc memo_t;
+
+drop table memo_t;
+
+alter table memo_t
+modify `write_date` datetime;
+
+-- add record 1.
+insert into `memo_t` ( `title`, `content`, `pw`, `writer`, `write_date` )
+	   values ( 'custom Title', 'hello world\n', 'pw1234', 'author', now() );
+       
+select * from memo_t;
+
+-- add record 2.
+insert into `memo_t` values ( default, 'second Title', 'hi', 'pw1234', 'mavel', now() );
+insert into `memo_t` values ( m_idx, 'second Title', 'hi', 'pw1234', 'mavel', now() );
+
+select * from memo_t;
+
+-- update column values 01.
+update memo_t
+set title = 'trans title';
+
+-- update column values 02.
+update memo_t
+set writer = 'trans'
+where m_idx = 4;
+
+-- delete
+delete from memo_t
+where m_idx = 1;
+
+delete from memo_t
+where m_idx in ( 3, 7, 17, 50 );
+
+select * from memo_t;
+
+-- ex 1.
+-- design library scheme
+create database library;
+use library;
+
+create table `library`.`books` (
+	book_idx bigint auto_increment,
+    book_name varchar( 100 ) not null,
+    isbn varchar( 50 ) not null,
+    borrowed bool default false not null,
+    place varchar( 50 ) not null,
+    constraint primary key( book_idx )
+);
+
+create table `library`.`members` (
+	m_idx bigint auto_increment,
+    m_name varchar( 100 ) not null,
+    m_contact varchar( 100 ) not null,
+    m_jumin varchar( 10 ) not null,
+    m_birth varchar( 10 ) not null,
+    m_address varchar( 256 ) not null,
+    m_activate bool default true,
+    constraint members_t_pk primary key( m_idx, m_name )
+);
+
+create table `library`.`book_status` (
+	bs_idx bigint auto_increment,
+    book_idx bigint not null,
+    borrowed_idx bigint,
+    borrowed_name varchar( 100 ) not null,
+    borrow_from_date date,
+    borrow_to_date date,
+
+	constraint primary key( bs_idx ),
+    
+    constraint FOREIGN KEY ( borrowed_idx, borrowed_name )
+      REFERENCES `library`.`members`( m_idx, m_name ),
+    
+    constraint members_t_fk foreign key( book_idx ) 
+		references `library`.`books`( book_idx )
+);
+
+drop table `library`.`books`;
+drop table `library`.`members`;
+drop table `library`.`book_status`;
+
+17:41:33	create table `library`.`book_status` (  bs_idx int auto_increment,     book_idx int not null,     borrowed_idx int,     borrowed_name varchar( 100 ) not null,     borrow_from_date date,     borrow_to_date date,   constraint primary key( bs_idx ),     constraint foreign key( book_idx )    references `library`.`books`( book_idx ),   -- ON UPDATE CASCADE ON DELETE RESTRICT,     constraint foreign key( borrowed_idx, borrowed_name )    references `library`.`members`( m_idx, m_name ) )	Error Code: 1822. Failed to add the foreign key constraint. Missing index for constraint 'book_status_ibfk_2' in the referenced table 'members'	0.000 sec
