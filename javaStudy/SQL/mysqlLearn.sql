@@ -736,9 +736,13 @@ select * from memo_t;
 
 -- ex 1.
 -- design library scheme
+drop database library;
 create database library;
+
 use library;
 
+-- books table
+drop table `library`.`books`;
 create table `library`.`books` (
 	book_idx bigint auto_increment,
     book_name varchar( 100 ) not null,
@@ -748,6 +752,8 @@ create table `library`.`books` (
     constraint primary key( book_idx )
 );
 
+-- members table
+drop table `library`.`members`;
 create table `library`.`members` (
 	m_idx bigint auto_increment,
     m_name varchar( 100 ) not null,
@@ -759,6 +765,8 @@ create table `library`.`members` (
     constraint members_t_pk primary key( m_idx, m_name )
 );
 
+-- book_status table
+drop table `library`.`book_status`;
 create table `library`.`book_status` (
 	bs_idx bigint auto_increment,
     book_idx bigint not null,
@@ -776,8 +784,8 @@ create table `library`.`book_status` (
 		references `library`.`books`( book_idx )
 );
 
-drop table `library`.`books`;
-drop table `library`.`members`;
-drop table `library`.`book_status`;
+desc employees.employees;
 
-17:41:33	create table `library`.`book_status` (  bs_idx int auto_increment,     book_idx int not null,     borrowed_idx int,     borrowed_name varchar( 100 ) not null,     borrow_from_date date,     borrow_to_date date,   constraint primary key( bs_idx ),     constraint foreign key( book_idx )    references `library`.`books`( book_idx ),   -- ON UPDATE CASCADE ON DELETE RESTRICT,     constraint foreign key( borrowed_idx, borrowed_name )    references `library`.`members`( m_idx, m_name ) )	Error Code: 1822. Failed to add the foreign key constraint. Missing index for constraint 'book_status_ibfk_2' in the referenced table 'members'	0.000 sec
+use employees;
+
+select * from employees where gender = 'f';

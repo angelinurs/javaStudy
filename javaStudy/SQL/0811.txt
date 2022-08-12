@@ -336,6 +336,7 @@
 		rent_date DATE,
 		return_date DATE,
 		pay DECIMAL(6),
+		CONSTRAINT rent_story_pk PRIMARY KEY(idx),
 		CONSTRAINT rent_story_fk1 FOREIGN KEY(m_id) REFERENCES member_t(m_id),
 		CONSTRAINT rent_story_fk2 FOREIGN KEY(b_id) REFERENCES book_t(b_id)
 	);
