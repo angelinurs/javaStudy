@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<books>
+	<book>
+		<number>1</number>
+		<name>이상한 나라의 엘리스</name>
+		<author>루이스 캐롤</author>
+		<price>10,000</price>
+		<pages>184</pages>
+		<wight>428g</wight>
+		<size>148*218*20mm</size>
+		<isbn10>8952787706</isbn10>
+		<isbn13>9788952787705</isbn13>
+		<category>그림동화</category>
+	</book>
+	<book>
+		<number>2</number>
+		<name>어린왕자</name>
+		<author>앙투안 드 생텍쥐페리</author>
+		<price>13,800</price>
+		<pages>200</pages>
+		<wight>278g</wight>
+		<size>128*186*20mm</size>
+		<isbn10>1192412125</isbn10>
+		<isbn13>9791192412122</isbn13>
+		<category>그림동화</category>
+	</book>
+	<book>
+		<number>3</number>
+		<name>파랑새</name>
+		<author>모리스 마테를링크</author>
+		<price>11,000</price>
+		<pages>195</pages>
+		<wight>388g</wight>
+		<size>155*225*20mm</size>
+		<isbn10>8952788176</isbn10>
+		<isbn13>9788952788177</isbn13>
+		<category>그림동화</category>
+	</book>
+</books>

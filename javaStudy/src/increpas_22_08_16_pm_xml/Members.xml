@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	- SYSTEM : 임의의 경로
+	- PUBLIC : 표준 라이브러리 경로 
+	- https://www.w3.org/ 에 정의 되어있음.
+ -->
+<!DOCTYPE Members SYSTEM 'Members.dtd'>
+<Members>
+	<Member member_ID="a1">
+		<name> Sealion </name>
+		<phone> 010-xxxx-xxxx</phone>
+	</Member>
+	
+	<Member GRADE = "operator" member_ID = "a2">
+		<name> Killer Whale </name>
+		<cell> 02-xxx-xxxx </cell>
+	</Member>
+	
+	<Member GRADE = "regular_member" member_ID = "a3">
+		<name> Belluga </name>
+		<cell> 02-xxx-xxxx </cell>
+	</Member>
+	
+	<excellent_member member_ID = "a3"/>
+	<new_beginner member_ID = "a1 a2"/>
+	
+</Members>

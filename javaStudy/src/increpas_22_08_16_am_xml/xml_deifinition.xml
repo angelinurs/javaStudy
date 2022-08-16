@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- line 11. 현재 문서의 root element 를 `root` 로 하겠다. -->
+<!-- 
+	- line 12. root element 에 자식 요소는 `first` 와 `second`로 지정되어야 한다.
+	- 이때 `,` 는 순서를 의미한다. 
+-->
+
+<!-- line 13. `PCDATA` 자식 요소로 parsing 을 필요로 하는 문자 데이터 의미 -->
+
+<!DOCTYPE root [
+	<!ELEMENT root ( first, second )>
+	<!ELEMENT first ( #PCDATA )>
+	<!ELEMENT second ( #PCDATA )>
+]>
+
+<root>
+	<first>문자열 데이터 1.</first>
+	<second>문자열 데이터 2.</second>
+</root>

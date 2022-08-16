@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE books [
+	<!--
+		- `+` 는 같은 element 가 1개 이상 사용가능
+	-->
+	<!ELEMENT books ( best_seller+ )>
+	<!-- 
+		- `+` 위치는 안쪽과 바깥쪽 둘다 가능
+		<!ELEMENT books ( best_seller )+ > 
+		- `?` 중복 불가능, 생략 가능
+		- `*` 중복 가능, 생략 가능
+		<!ELEMENT best_seller ( title, author+, press*, publish? )>
+	-->
+	<!ELEMENT best_seller ( title, author, press, publish )>
+	<!ELEMENT title ( #PCDATA )>
+	<!ELEMENT author ( #PCDATA )>
+	<!ELEMENT press ( #PCDATA )>
+	<!ELEMENT publish ( #PCDATA )>
+	
+	<!--
+		- 속성 설정하기
+		- best_seller element 안에 ISBN 이라는 속성을 부여햔다.
+		- #REQUIRED 는 반드시 ISBN 이라는 속성을 넣어야 한다는 의미이다.
+		- #IMPLIED 는 생략가능하다는 의미.
+	-->
+	
+	<!ATTLIST best_seller ISBN CDATA #REQUIRED>
+	<!ATTLIST best_seller COVER CDATA #IMPLIED>
+]>
+
+<books>
+	<best_seller ISBN="J001">
+		<title>Cook Book</title>
+		<author>master shef</author>
+		<press>Delicious media</press>
+		<publish>2000</publish>
+	</best_seller>
+	
+	<best_seller ISBN="J090" COVER="surface.jpeg">
+		<title>Cook BIBLE</title>
+		<author>beginner</author>
+		<press>Element publisher</press>
+		<publish>2010</publish>
+	</best_seller>
+</books>

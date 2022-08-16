@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	- attribute 적용해보기 
+ -->
+
+<!DOCTYPE Members[
+	<!ELEMENT Members ( Member+, excellent_member, new_beginner ) >
+	<!ELEMENT Member ( name, ( phone | cell ) ) >
+	<!ELEMENT name ( #PCDATA ) >
+	<!ELEMENT phone ( #PCDATA ) >
+	<!ELEMENT cell ( #PCDATA ) >
+	
+	<!ELEMENT excellent_member EMPTY >
+	<!ELEMENT new_beginner EMPTY >
+		
+	<!ATTLIST Member GRADE 
+		( operator | regular_member | associate_member ) "associate_member" > 
+	<!ATTLIST Member member_ID ID #REQUIRED> 
+	<!ATTLIST excellent_member member_ID IDREF #REQUIRED> 
+	<!ATTLIST new_beginner member_ID IDREFS #IMPLIED> 
+]>
+
+<Members>
+	<Member member_ID="a1">
+		<name> Sealion </name>
+		<phone> 010-xxxx-xxxx</phone>
+	</Member>
+	
+	<Member GRADE = "operator" member_ID = "a2">
+		<name> Killer Whale </name>
+		<cell> 02-xxx-xxxx </cell>
+	</Member>
+	
+	<Member GRADE = "regular_member" member_ID = "a3">
+		<name> Belluga </name>
+		<cell> 02-xxx-xxxx </cell>
+	</Member>
+	
+	<excellent_member member_ID = "a3"/>
+	<new_beginner member_ID = "a1 a2"/>
+	
+</Members>

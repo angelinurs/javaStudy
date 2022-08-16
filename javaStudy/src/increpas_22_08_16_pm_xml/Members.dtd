@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT Members ( Member+, excellent_member, new_beginner ) >
+<!ELEMENT Member ( name, ( phone | cell ) ) >
+<!ELEMENT name ( #PCDATA ) >
+<!ELEMENT phone ( #PCDATA ) >
+<!ELEMENT cell ( #PCDATA ) >
+
+<!ELEMENT excellent_member EMPTY >
+<!ELEMENT new_beginner EMPTY >
+	
+<!ATTLIST Member GRADE 
+	( operator | regular_member | associate_member ) "associate_member" > 
+<!ATTLIST Member member_ID ID #REQUIRED> 
+<!ATTLIST excellent_member member_ID IDREF #REQUIRED> 
+<!ATTLIST new_beginner member_ID IDREFS #IMPLIED> 

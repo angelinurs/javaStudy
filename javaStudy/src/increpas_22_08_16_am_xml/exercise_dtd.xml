@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Computer[
+	<!ELEMENT Computer ( CPU, RAM, HDD, VGA ) >
+	<!ELEMENT CPU ( #PCDATA ) >
+	<!ELEMENT RAM ( #PCDATA ) >
+	<!ELEMENT HDD ( #PCDATA ) >
+	<!ELEMENT VGA ( #PCDATA ) >
+]>
+
+<Computer>
+	<CPU>INTEL</CPU>
+	<RAM>32gb</RAM>
+	<HDD>1 tera</HDD>
+	<VGA>Internal</VGA>
+</Computer>

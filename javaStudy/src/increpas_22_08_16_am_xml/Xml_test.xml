@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+- root 는 무조건 1 개만 존재해야함.
+- tag name 이 반드시 root 일 필요는 없음.
+-->
+<root>
+	<!--
+		- root 에 해당하지 않는 내부의 태그는 여러개 생성가능.
+		- 중복도 가능.
+		- root 에 nested 된 tag 만 인정 
+	 -->
+	<personal>
+		<name> "Hong-gil-dong" </name>
+		<cellphon> "010-xxxx-xxxx" </cellphon>
+		<age> 13 </age>
+	</personal>
+	
+	<personal>
+		<name> "Joen-uh-chi" </name>
+		<cellphon> "010-xxxx-xxxx" </cellphon>
+		<age> 11 </age>
+	</personal>
+	
+	<personal>
+		<name> "dragon" </name>
+		<cellphon> "010-xxxx-xxxx" </cellphon>
+		<age> 12 </age>
+	</personal>
+	
+	<located>
+		<country>"South Korea"</country>
+	</located>
+	
+
+</root>
