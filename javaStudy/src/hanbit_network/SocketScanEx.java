@@ -85,11 +85,11 @@ public class SocketScanEx extends JFrame
 
 	private void setResultView() {
 		
-		add( new JScrollPane( resultList ), BorderLayout.CENTER );
-		
 		listModel = new DefaultListModel<>();
 		resultList = new JList<>( listModel );
 		resultList.setVisibleRowCount( 10 );
+		
+		add( new JScrollPane( resultList ), BorderLayout.CENTER );
 		
 	}
 
@@ -109,16 +109,15 @@ public class SocketScanEx extends JFrame
 		for( int port = 1; port < 65536; port++ ) {
 			
 			try {
-				s = new Socket( ip, index );
+				s = new Socket( ip, port );
 				listModel.insertElementAt( port + mesg, index );
 				resultList.setSelectedIndex( index );
-				
 				
 			} catch (UnknownHostException ukhe) {
 				System.out.println( "address is not exist." );
 //				ukhe.printStackTrace();
 			} catch (IOException ioe) {
-				listModel.setElementAt(  port + " is  not exist." , index);
+				listModel.insertElementAt( port + " is  not exist." , index);
 				resultList.setSelectedIndex( index );
 				
 //				ioe.printStackTrace();
@@ -127,6 +126,7 @@ public class SocketScanEx extends JFrame
 	}
 
 	public static void main(String[] args) {
+		SocketScanEx.setDefaultLookAndFeelDecorated( true );
 		new SocketScanEx();
 
 	}
